@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import figlet from 'figlet';
 import { runAlgorithm, getAlgorithmList, ALGORITHMS } from '../algorithms';
+import { chalk, boxen, createSpinner, gradient, cliTable, inquirerList } from '../utils/cliTools';
 import GanttChart from './GanttChart';
 import ResultsTable from './ResultsTable';
 import './Terminal.css';
 
+// Fallback banner before figlet loads
 const FALLBACK_BANNER = [
   { text: '', type: 'info' },
   { text: '  CPU Scheduling Algorithm Visualizer', type: 'header' },
@@ -13,16 +15,26 @@ const FALLBACK_BANNER = [
   { text: '', type: 'info' },
 ];
 
-function makeBanner(figletText) {
-  const artLines = figletText.split('\n').map(l => ({ text: '  ' + l, type: 'success' }));
-  return [
-    { text: '', type: 'info' },
-    ...artLines,
-    { text: '', type: 'info' },
-    { text: '  Interactive terminal for OS scheduling simulation', type: 'dim' },
-    { text: '  Type "help" to see available commands', type: 'dim' },
-    { text: '', type: 'info' },
-  ];
+/**
+ * Build the welcome banner using:
+ * - figlet for ASCII art
+ * - gradient-string for colored title
+ * - boxen for the info box
+ * - chalk for styled text
+ */
+// Spinner frames for boot animation (ora-style)
+const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
+// Boot sequence messages
+const BOOT_STEPS = [
+  { msg: 'Loading scheduling engine', delay: 400 },
+  { msg: 'Initializing algorithms', delay: 350 },
+  { msg: 'Rendering visualizer modules', delay: 400 },
+  { msg: 'Mounting terminal interface', delay: 300 },
+];
+
+function makeBannerArt(figletText) {
+  return figletText.split('\n').map(l => ({ text: '  ' + l, type: 'success' }));
 }
 
 export default function Terminal() {
@@ -33,19 +45,107 @@ export default function Terminal() {
   const [historyIdx, setHistoryIdx] = useState(-1);
   const [results, setResults] = useState(null);
   const [comparisonResults, setComparisonResults] = useState(null);
+  const [spinnerInterval, setSpinnerInterval] = useState(null);
+  const [booting, setBooting] = useState(true);
 
   const outputRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Generate figlet banner on mount
+  // figlet + boot animation on mount
   useEffect(() => {
-    import('figlet/importable-fonts/Small Slant').then(font => {
-      figlet.parseFont('Small Slant', font.default);
-      const art = figlet.textSync('CPU Sched', { font: 'Small Slant' });
-      setLines(makeBanner(art));
-    }).catch(() => {
-      // fallback already set
-    });
+    let cancelled = false;
+
+    async function bootSequence() {
+      // 1. Load figlet font
+      let artLines;
+      try {
+        const font = await import('figlet/importable-fonts/ANSI Regular');
+        figlet.parseFont('ANSI Regular', font.default);
+        const art = figlet.textSync('CPU Sched', { font: 'ANSI Regular' });
+        artLines = makeBannerArt(art);
+      } catch {
+        artLines = [{ text: '  CPU Scheduling Algorithm Visualizer', type: 'header' }];
+      }
+
+      if (cancelled) return;
+
+      // 2. Show ASCII art immediately
+      setLines([
+        { text: '', type: 'info' },
+        ...artLines,
+        { text: '', type: 'info' },
+      ]);
+
+      // 3. Run boot steps with spinner animation
+      for (const step of BOOT_STEPS) {
+        if (cancelled) return;
+
+        // Add spinner line
+        let frameIdx = 0;
+        const spinnerLine = { text: `  ${SPINNER[0]} ${step.msg}...`, type: 'info' };
+
+        setLines(prev => [...prev, spinnerLine]);
+
+        // Animate spinner
+        const interval = setInterval(() => {
+          if (cancelled) return;
+          frameIdx = (frameIdx + 1) % SPINNER.length;
+          setLines(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              text: `  ${SPINNER[frameIdx]} ${step.msg}...`,
+              type: 'info',
+            };
+            return updated;
+          });
+        }, 80);
+
+        // Wait for step duration
+        await new Promise(r => setTimeout(r, step.delay));
+        clearInterval(interval);
+
+        if (cancelled) return;
+
+        // Replace spinner with checkmark
+        setLines(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            text: `  ✔ ${step.msg}`,
+            type: 'success',
+          };
+          return updated;
+        });
+      }
+
+      if (cancelled) return;
+
+      // 4. System Ready message (gradient) + Info Box
+      await new Promise(r => setTimeout(r, 200));
+
+      const infoBox = boxen(
+        'Interactive terminal for OS scheduling simulation\nType "help" to see available commands',
+        {
+          padding: 0,
+          borderStyle: 'round',
+          borderColor: 'dim',
+          textColor: 'dim',
+        }
+      );
+
+      setLines(prev => [
+        ...prev,
+        { text: '', type: 'info' },
+        gradient.mind('  >> SYSTEM READY <<'),
+        { text: '', type: 'info' },
+        ...infoBox,
+        { text: '', type: 'info' },
+      ]);
+
+      setBooting(false);
+    }
+
+    bootSequence();
+    return () => { cancelled = true; };
   }, []);
 
   // Auto-scroll to bottom
@@ -54,6 +154,13 @@ export default function Terminal() {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
   }, [lines]);
+
+  // Cleanup spinner on unmount
+  useEffect(() => {
+    return () => {
+      if (spinnerInterval) clearInterval(spinnerInterval);
+    };
+  }, [spinnerInterval]);
 
   // Focus input on click
   const focusInput = useCallback(() => {
@@ -64,6 +171,57 @@ export default function Terminal() {
     setLines(prev => [...prev, ...newLines]);
   }, []);
 
+  /**
+   * ora spinner: Animate a spinner, then resolve with success/fail.
+   * Used when "running" an algorithm to give a loading feel.
+   */
+  const runWithSpinner = useCallback((text, task, duration = 600) => {
+    return new Promise((resolve) => {
+      const spinner = createSpinner(text);
+      const spinnerLineIdx = { current: null };
+
+      // Add initial spinner frame
+      setLines(prev => {
+        spinnerLineIdx.current = prev.length;
+        return [...prev, spinner.getFrame()];
+      });
+
+      // Animate spinner
+      const interval = setInterval(() => {
+        setLines(prev => {
+          const updated = [...prev];
+          if (spinnerLineIdx.current !== null) {
+            updated[spinnerLineIdx.current] = spinner.getFrame();
+          }
+          return updated;
+        });
+      }, 80);
+
+      setSpinnerInterval(interval);
+
+      // After duration, stop spinner and run task
+      setTimeout(() => {
+        clearInterval(interval);
+        setSpinnerInterval(null);
+
+        const result = task();
+
+        // Replace spinner with success/fail
+        setLines(prev => {
+          const updated = [...prev];
+          if (spinnerLineIdx.current !== null) {
+            updated[spinnerLineIdx.current] = result.error
+              ? spinner.fail(result.error)
+              : spinner.succeed(`${text} — done`);
+          }
+          return updated;
+        });
+
+        resolve(result);
+      }, duration);
+    });
+  }, []);
+
   const handleCommand = useCallback((cmd) => {
     const trimmed = cmd.trim();
     if (!trimmed) return;
@@ -72,8 +230,8 @@ export default function Terminal() {
     setHistory(prev => [trimmed, ...prev].slice(0, 50));
     setHistoryIdx(-1);
 
-    // Echo the command
-    addLines([{ text: `$ ${trimmed}`, type: 'command' }]);
+    // chalk: Echo the command with styling
+    addLines([chalk.white(`$ ${trimmed}`)]);
 
     const parts = trimmed.split(/\s+/);
     const command = parts[0].toLowerCase();
@@ -104,7 +262,7 @@ export default function Terminal() {
         setProcesses([]);
         setResults(null);
         setComparisonResults(null);
-        addLines([{ text: 'All processes cleared.', type: 'success' }]);
+        addLines([chalk.green('✔ All processes cleared.')]);
         break;
       case 'info':
         handleInfo(parts[1]);
@@ -114,39 +272,58 @@ export default function Terminal() {
         break;
       default:
         addLines([
-          { text: `Unknown command: ${command}`, type: 'error' },
-          { text: 'Type "help" for available commands.', type: 'dim' }
+          chalk.red(`  ✖ Unknown command: ${command}`),
+          chalk.dim('  Type "help" for available commands.')
         ]);
     }
   }, [processes]);
 
+  /**
+   * help: Uses boxen for section headers, chalk for coloring,
+   * and cli-table3 style formatting for the algorithm list.
+   */
   const handleHelp = () => {
+    const helpBox = boxen(
+      'Type any command below to get started\nUse arrow keys ↑↓ for command history',
+      {
+        padding: 0,
+        borderStyle: 'round',
+        borderColor: 'dim',
+        textColor: 'dim',
+        title: 'QUICK START',
+        titleColor: 'header',
+      }
+    );
+
+    const algoRows = getAlgorithmList().map(a => [a.key, a.name, a.type]);
+
     addLines([
       { text: '', type: 'output' },
-      { text: '  AVAILABLE COMMANDS', type: 'header' },
-      { text: '  ──────────────────────────────────────────', type: 'dim' },
-      { text: '  add <pid> <arrival> <burst> [priority]    Add a process', type: 'output' },
-      { text: '  list                                      Show current processes', type: 'output' },
-      { text: '  run <algorithm> [quantum]                 Run a scheduling algorithm', type: 'output' },
-      { text: '  compare                                   Compare all algorithms', type: 'output' },
-      { text: '  info <algorithm>                          Show algorithm details', type: 'output' },
-      { text: '  demo                                      Load demo processes', type: 'output' },
-      { text: '  reset                                     Clear all processes', type: 'output' },
-      { text: '  clear                                     Clear terminal', type: 'output' },
-      { text: '  help                                      Show this help', type: 'output' },
+      // chalk: styled header
+      chalk.yellowBold('  COMMANDS'),
+      chalk.dim('  ──────────────────────────────────────────'),
+      chalk.white('  add <pid> <arrival> <burst> [priority]    Add a process'),
+      chalk.white('  list                                      Show current processes'),
+      chalk.white('  run <algorithm> [quantum]                 Run a scheduling algorithm'),
+      chalk.white('  compare                                   Compare all algorithms'),
+      chalk.white('  info <algorithm>                          Show algorithm details'),
+      chalk.white('  demo                                      Load demo processes'),
+      chalk.white('  reset                                     Clear all processes'),
+      chalk.white('  clear                                     Clear terminal'),
+      chalk.white('  help                                      Show this help'),
       { text: '', type: 'output' },
-      { text: '  AVAILABLE ALGORITHMS', type: 'header' },
-      { text: '  ──────────────────────────────────────────', type: 'dim' },
-      ...getAlgorithmList().map(a =>
-        ({ text: `  ${a.key.padEnd(12)} ${a.name} (${a.type})`, type: 'output' })
+      // chalk: styled header
+      chalk.yellowBold('  ALGORITHMS'),
+      chalk.dim('  ──────────────────────────────────────────'),
+      // cli-table3: formatted table
+      ...cliTable(
+        ['Key', 'Name', 'Type'],
+        algoRows,
+        { headerColor: 'header', rowColor: 'output', borderColor: 'dim' }
       ),
       { text: '', type: 'output' },
-      { text: '  EXAMPLE WORKFLOW', type: 'header' },
-      { text: '  ──────────────────────────────────────────', type: 'dim' },
-      { text: '  $ demo                    # Load sample processes', type: 'dim' },
-      { text: '  $ run fcfs                # Run FCFS algorithm', type: 'dim' },
-      { text: '  $ run rr 3                # Run Round Robin with quantum=3', type: 'dim' },
-      { text: '  $ compare                 # Compare all algorithms', type: 'dim' },
+      // boxen: info box
+      ...helpBox,
       { text: '', type: 'output' },
     ]);
   };
@@ -154,8 +331,8 @@ export default function Terminal() {
   const handleAdd = (args) => {
     if (args.length < 3) {
       addLines([
-        { text: 'Usage: add <pid> <arrival> <burst> [priority]', type: 'error' },
-        { text: 'Example: add 1 0 5', type: 'dim' }
+        chalk.red('  ✖ Usage: add <pid> <arrival> <burst> [priority]'),
+        chalk.dim('  Example: add 1 0 5')
       ]);
       return;
     }
@@ -166,53 +343,62 @@ export default function Terminal() {
     const priority = args[3] ? parseInt(args[3]) : 0;
 
     if (isNaN(pid) || isNaN(arrival) || isNaN(burst)) {
-      addLines([{ text: 'Error: PID, arrival, and burst must be numbers.', type: 'error' }]);
+      addLines([chalk.red('  ✖ PID, arrival, and burst must be numbers.')]);
       return;
     }
     if (burst <= 0) {
-      addLines([{ text: 'Error: Burst time must be positive.', type: 'error' }]);
+      addLines([chalk.red('  ✖ Burst time must be positive.')]);
       return;
     }
     if (arrival < 0) {
-      addLines([{ text: 'Error: Arrival time cannot be negative.', type: 'error' }]);
+      addLines([chalk.red('  ✖ Arrival time cannot be negative.')]);
       return;
     }
     if (processes.some(p => p.pid === pid)) {
-      addLines([{ text: `Error: Process with PID ${pid} already exists.`, type: 'error' }]);
+      addLines([chalk.red(`  ✖ Process with PID ${pid} already exists.`)]);
       return;
     }
 
     const proc = { pid, arrival, burst, priority };
     setProcesses(prev => [...prev, proc]);
     addLines([
-      { text: `✓ Process added: PID=${pid}, Arrival=${arrival}, Burst=${burst}${args[3] ? `, Priority=${priority}` : ''}`, type: 'success' }
+      chalk.green(`  ✔ Process added: PID=${pid}, Arrival=${arrival}, Burst=${burst}${args[3] ? `, Priority=${priority}` : ''}`)
     ]);
   };
 
+  /**
+   * list: Uses cli-table3 for formatted process table display.
+   */
   const handleList = () => {
     if (processes.length === 0) {
-      addLines([{ text: 'No processes added yet. Use "add <pid> <arrival> <burst>" or "demo".', type: 'warning' }]);
+      addLines([chalk.yellow('  ⚠ No processes added yet. Use "add" or "demo".')]);
       return;
     }
 
+    const rows = processes.map(p => [p.pid, p.arrival, p.burst, p.priority]);
+
     addLines([
       { text: '', type: 'output' },
-      { text: `  ${'PID'.padEnd(8)}${'Arrival'.padEnd(10)}${'Burst'.padEnd(10)}${'Priority'.padEnd(10)}`, type: 'header' },
-      { text: '  ' + '─'.repeat(38), type: 'dim' },
-      ...processes.map(p => ({
-        text: `  ${String(p.pid).padEnd(8)}${String(p.arrival).padEnd(10)}${String(p.burst).padEnd(10)}${String(p.priority).padEnd(10)}`,
-        type: 'output'
-      })),
-      { text: `  Total: ${processes.length} process(es)`, type: 'dim' },
-      { text: '', type: 'output' }
+      // cli-table3: formatted table
+      ...cliTable(
+        ['PID', 'Arrival', 'Burst', 'Priority'],
+        rows,
+        { headerColor: 'header', rowColor: 'output', borderColor: 'dim' }
+      ),
+      chalk.dim(`  Total: ${processes.length} process(es)`),
+      { text: '', type: 'output' },
     ]);
   };
 
-  const handleRun = (args) => {
+  /**
+   * run: Uses ora spinner while "processing", then displays results
+   * in a cli-table3 table with a boxen summary.
+   */
+  const handleRun = async (args) => {
     if (args.length === 0) {
       addLines([
-        { text: 'Usage: run <algorithm> [quantum]', type: 'error' },
-        { text: 'Example: run fcfs  or  run rr 3', type: 'dim' }
+        chalk.red('  ✖ Usage: run <algorithm> [quantum]'),
+        chalk.dim('  Example: run fcfs  or  run rr 3')
       ]);
       return;
     }
@@ -220,14 +406,14 @@ export default function Terminal() {
     const algoKey = args[0].toLowerCase();
     if (!ALGORITHMS[algoKey]) {
       addLines([
-        { text: `Unknown algorithm: ${algoKey}`, type: 'error' },
-        { text: `Available: ${Object.keys(ALGORITHMS).join(', ')}`, type: 'dim' }
+        chalk.red(`  ✖ Unknown algorithm: ${algoKey}`),
+        chalk.dim(`  Available: ${Object.keys(ALGORITHMS).join(', ')}`)
       ]);
       return;
     }
 
     if (processes.length === 0) {
-      addLines([{ text: 'No processes to schedule. Use "add" or "demo" first.', type: 'error' }]);
+      addLines([chalk.red('  ✖ No processes to schedule. Use "add" or "demo" first.')]);
       return;
     }
 
@@ -236,75 +422,102 @@ export default function Terminal() {
     if (algo.needsQuantum) {
       const q = parseInt(args[1]);
       if (!q || q <= 0) {
-        addLines([{ text: `${algo.shortName} requires a quantum. Usage: run ${algoKey} <quantum>`, type: 'error' }]);
+        // inquirer-style prompt
+        addLines([
+          ...inquirerList(`${algo.shortName} requires a time quantum:`, [
+            `run ${algoKey} 2`,
+            `run ${algoKey} 3`,
+            `run ${algoKey} 4`,
+          ]),
+        ]);
         return;
       }
       options.quantum = q;
     }
 
-    addLines([
-      { text: `Running ${algo.name} (${algo.type})...`, type: 'info' },
-    ]);
+    // ora: Run with spinner animation
+    const result = await runWithSpinner(
+      `Running ${algo.name} (${algo.type})...`,
+      () => runAlgorithm(algoKey, processes, options),
+      600
+    );
 
-    const result = runAlgorithm(algoKey, processes, options);
     if (result.error) {
-      addLines([{ text: `Error: ${result.error}`, type: 'error' }]);
       return;
     }
 
-    // Show results in terminal
+    // Build results rows for cli-table3
+    const resultRows = result.results.map(r => [
+      r.pid, r.arrival, r.burst, r.completion, r.turnaround, r.waiting, r.response
+    ]);
+
+    // boxen: Summary box with averages
+    const summaryBox = boxen(
+      `Avg TAT: ${result.averages.avgTurnaround.toFixed(2)}  │  Avg WT: ${result.averages.avgWaiting.toFixed(2)}  │  Avg RT: ${result.averages.avgResponse.toFixed(2)}`,
+      {
+        padding: 0,
+        borderStyle: 'round',
+        borderColor: 'success',
+        textColor: 'success',
+      }
+    );
+
     addLines([
       { text: '', type: 'output' },
-      { text: `  ═══ ${result.algorithmName} Results ═══`, type: 'header' },
+      // gradient-string: Result header
+      gradient.vice(`  ═══ ${result.algorithmName} Results ═══`),
       { text: '', type: 'output' },
-      { text: `  ${'PID'.padEnd(6)}${'AT'.padEnd(6)}${'BT'.padEnd(6)}${'CT'.padEnd(6)}${'TAT'.padEnd(6)}${'WT'.padEnd(6)}${'RT'.padEnd(6)}`, type: 'header' },
-      { text: '  ' + '─'.repeat(42), type: 'dim' },
-      ...result.results.map(r => ({
-        text: `  ${String(r.pid).padEnd(6)}${String(r.arrival).padEnd(6)}${String(r.burst).padEnd(6)}${String(r.completion).padEnd(6)}${String(r.turnaround).padEnd(6)}${String(r.waiting).padEnd(6)}${String(r.response).padEnd(6)}`,
-        type: 'output'
-      })),
-      { text: '  ' + '─'.repeat(42), type: 'dim' },
-      { text: `  Avg TAT: ${result.averages.avgTurnaround.toFixed(2)}  |  Avg WT: ${result.averages.avgWaiting.toFixed(2)}  |  Avg RT: ${result.averages.avgResponse.toFixed(2)}`, type: 'success' },
-      { text: '', type: 'output' }
+      // cli-table3: Results table
+      ...cliTable(
+        ['PID', 'AT', 'BT', 'CT', 'TAT', 'WT', 'RT'],
+        resultRows,
+        { headerColor: 'header', rowColor: 'output', borderColor: 'dim' }
+      ),
+      { text: '', type: 'output' },
+      // boxen: Summary
+      ...summaryBox,
+      { text: '', type: 'output' },
     ]);
 
     setResults({ ...result, algoKey, options });
     setComparisonResults(null);
   };
 
-  const handleCompare = () => {
+  /**
+   * compare: Uses ora spinner, cli-table3 comparison table,
+   * and chalk for the "best" highlight.
+   */
+  const handleCompare = async () => {
     if (processes.length === 0) {
-      addLines([{ text: 'No processes. Use "add" or "demo" first.', type: 'error' }]);
+      addLines([chalk.red('  ✖ No processes. Use "add" or "demo" first.')]);
       return;
     }
 
-    addLines([{ text: 'Comparing all algorithms...', type: 'info' }]);
+    // ora: Spinner while computing
+    const allResults = await runWithSpinner(
+      'Comparing all algorithms...',
+      () => {
+        const results = {};
+        for (const [key, algo] of Object.entries(ALGORITHMS)) {
+          const opts = {};
+          if (algo.needsQuantum) opts.quantum = 2;
+          const result = runAlgorithm(key, processes, opts);
+          if (!result.error) results[key] = result;
+        }
+        return results;
+      },
+      800
+    );
 
-    const allResults = {};
-    for (const [key, algo] of Object.entries(ALGORITHMS)) {
-      const options = {};
-      if (algo.needsQuantum) options.quantum = 2; // default quantum for comparison
-      const result = runAlgorithm(key, processes, options);
-      if (!result.error) {
-        allResults[key] = result;
-      }
-    }
-
-    // Show comparison table
-    addLines([
-      { text: '', type: 'output' },
-      { text: '  ═══ Algorithm Comparison ═══', type: 'header' },
-      { text: '', type: 'output' },
-      { text: `  ${'Algorithm'.padEnd(16)}${'Avg TAT'.padEnd(12)}${'Avg WT'.padEnd(12)}${'Avg RT'.padEnd(12)}`, type: 'header' },
-      { text: '  ' + '─'.repeat(52), type: 'dim' },
-      ...Object.entries(allResults).map(([key, r]) => ({
-        text: `  ${ALGORITHMS[key].shortName.padEnd(16)}${r.averages.avgTurnaround.toFixed(2).padEnd(12)}${r.averages.avgWaiting.toFixed(2).padEnd(12)}${r.averages.avgResponse.toFixed(2).padEnd(12)}`,
-        type: 'output'
-      })),
-      { text: '', type: 'output' },
+    // cli-table3: Comparison table
+    const compRows = Object.entries(allResults).map(([key, r]) => [
+      ALGORITHMS[key].shortName,
+      r.averages.avgTurnaround.toFixed(2),
+      r.averages.avgWaiting.toFixed(2),
+      r.averages.avgResponse.toFixed(2),
     ]);
 
-    // Find best algorithm
+    // Find best
     let bestWT = Infinity, bestAlgo = '';
     for (const [key, r] of Object.entries(allResults)) {
       if (r.averages.avgWaiting < bestWT) {
@@ -312,44 +525,86 @@ export default function Terminal() {
         bestAlgo = ALGORITHMS[key].shortName;
       }
     }
+
+    // boxen: Winner box
+    const winnerBox = boxen(
+      `★ Best avg waiting time: ${bestAlgo} (${bestWT.toFixed(2)})`,
+      {
+        padding: 0,
+        borderStyle: 'bold',
+        borderColor: 'success',
+        textColor: 'success',
+      }
+    );
+
     addLines([
-      { text: `  ★ Best avg waiting time: ${bestAlgo} (${bestWT.toFixed(2)})`, type: 'success' },
-      { text: '', type: 'output' }
+      { text: '', type: 'output' },
+      gradient.rainbow('  ═══ Algorithm Comparison ═══'),
+      { text: '', type: 'output' },
+      ...cliTable(
+        ['Algorithm', 'Avg TAT', 'Avg WT', 'Avg RT'],
+        compRows,
+        { headerColor: 'header', rowColor: 'output', borderColor: 'dim' }
+      ),
+      { text: '', type: 'output' },
+      ...winnerBox,
+      { text: '', type: 'output' },
     ]);
 
     setComparisonResults(allResults);
     setResults(null);
   };
 
+  /**
+   * info: Uses boxen for algorithm details, chalk for pros/cons.
+   */
   const handleInfo = (algoKey) => {
     if (!algoKey) {
-      addLines([{ text: 'Usage: info <algorithm>', type: 'error' }]);
+      addLines([chalk.red('  ✖ Usage: info <algorithm>')]);
       return;
     }
     const key = algoKey.toLowerCase();
     const algo = ALGORITHMS[key];
     if (!algo) {
-      addLines([{ text: `Unknown algorithm: ${key}`, type: 'error' }]);
+      addLines([chalk.red(`  ✖ Unknown algorithm: ${key}`)]);
       return;
     }
+
+    const detailLines = [
+      `${algo.name} (${algo.shortName})`,
+      `Type: ${algo.type}`,
+      '',
+      algo.description,
+    ];
+
+    const detailBox = boxen(detailLines.join('\n'), {
+      padding: 1,
+      borderStyle: 'double',
+      borderColor: 'info',
+      textColor: 'output',
+      title: algo.shortName,
+      titleColor: 'header',
+    });
+
     addLines([
       { text: '', type: 'output' },
-      { text: `  ═══ ${algo.name} (${algo.shortName}) ═══`, type: 'header' },
-      { text: `  Type: ${algo.type}`, type: 'info' },
+      ...detailBox,
       { text: '', type: 'output' },
-      { text: `  ${algo.description}`, type: 'output' },
+      chalk.greenBold('  Pros:'),
+      ...algo.pros.map(p => chalk.green(`    ✔ ${p}`)),
+      chalk.redBold('  Cons:'),
+      ...algo.cons.map(c => chalk.red(`    ✖ ${c}`)),
       { text: '', type: 'output' },
-      { text: '  Pros:', type: 'success' },
-      ...algo.pros.map(p => ({ text: `    ✓ ${p}`, type: 'success' })),
-      { text: '  Cons:', type: 'error' },
-      ...algo.cons.map(c => ({ text: `    ✗ ${c}`, type: 'error' })),
+      ...(algo.needsQuantum ? [chalk.yellow(`  ⚙ Requires quantum: run ${key} <quantum>`)] : []),
+      ...(algo.needsPriority ? [chalk.yellow('  ⚙ Uses priority: add <pid> <arrival> <burst> <priority>')] : []),
       { text: '', type: 'output' },
-      ...(algo.needsQuantum ? [{ text: `  ⚙ Requires quantum parameter: run ${key} <quantum>`, type: 'warning' }] : []),
-      ...(algo.needsPriority ? [{ text: '  ⚙ Uses priority: add <pid> <arrival> <burst> <priority>', type: 'warning' }] : []),
-      { text: '', type: 'output' }
     ]);
   };
 
+  /**
+   * demo: Uses chalk for success, cli-table3 for process display,
+   * and boxen for the next-step hint.
+   */
   const handleDemo = () => {
     const demoProcesses = [
       { pid: 1, arrival: 0, burst: 5, priority: 3 },
@@ -361,17 +616,31 @@ export default function Terminal() {
     setProcesses(demoProcesses);
     setResults(null);
     setComparisonResults(null);
+
+    const rows = demoProcesses.map(p => [p.pid, p.arrival, p.burst, p.priority]);
+
+    // boxen: hint box
+    const hintBox = boxen(
+      'Try: run fcfs, run rr 3, or compare',
+      {
+        padding: 0,
+        borderStyle: 'round',
+        borderColor: 'dim',
+        textColor: 'dim',
+      }
+    );
+
     addLines([
-      { text: '✓ Demo processes loaded:', type: 'success' },
+      chalk.green('  ✔ Demo processes loaded:'),
       { text: '', type: 'output' },
-      { text: `  ${'PID'.padEnd(8)}${'Arrival'.padEnd(10)}${'Burst'.padEnd(10)}${'Priority'.padEnd(10)}`, type: 'header' },
-      { text: '  ' + '─'.repeat(38), type: 'dim' },
-      ...demoProcesses.map(p => ({
-        text: `  ${String(p.pid).padEnd(8)}${String(p.arrival).padEnd(10)}${String(p.burst).padEnd(10)}${String(p.priority).padEnd(10)}`,
-        type: 'output'
-      })),
+      // cli-table3: process table
+      ...cliTable(
+        ['PID', 'Arrival', 'Burst', 'Priority'],
+        rows,
+        { headerColor: 'header', rowColor: 'output', borderColor: 'dim' }
+      ),
       { text: '', type: 'output' },
-      { text: '  Try: run fcfs, run rr 3, or compare', type: 'dim' }
+      ...hintBox,
     ]);
   };
 
@@ -399,6 +668,22 @@ export default function Terminal() {
     }
   };
 
+  /**
+   * Render a single terminal line.
+   * Supports gradient-string CSS classes for gradient text.
+   */
+  const renderLine = (line, i) => {
+    const classNames = [`term-line`, `term-${line.type}`];
+    if (line.bold) classNames.push('term-bold');
+    if (line.isGradient) classNames.push('term-gradient');
+
+    return (
+      <div key={i} className={classNames.join(' ')}>
+        {line.text}
+      </div>
+    );
+  };
+
   return (
     <div className="terminal-wrapper">
       <div className="terminal-container" onClick={focusInput}>
@@ -411,11 +696,7 @@ export default function Terminal() {
           <span className="terminal-title">cpu-scheduler — bash</span>
         </div>
         <div className="terminal-output" ref={outputRef}>
-          {lines.map((line, i) => (
-            <div key={i} className={`term-line term-${line.type}`}>
-              {line.text}
-            </div>
-          ))}
+          {lines.map((line, i) => renderLine(line, i))}
         </div>
         <div className="terminal-input-line">
           <span className="terminal-prompt">$&nbsp;</span>
