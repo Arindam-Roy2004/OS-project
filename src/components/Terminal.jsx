@@ -6,12 +6,12 @@ import './Terminal.css';
 
 const WELCOME_BANNER = [
   '',
-  '  ╔══════════════════════════════════════════════════════════╗',
-  '  ║        CPU Scheduling Algorithm Visualizer              ║',
-  '  ║        ─────────────────────────────────────             ║',
-  '  ║   Interactive terminal for OS scheduling simulation     ║',
-  '  ║   Type "help" to see available commands                 ║',
-  '  ╚══════════════════════════════════════════════════════════╝',
+  '  +------------------------------------------------------+',
+  '  |    CPU Scheduling Algorithm Visualizer                |',
+  '  |    ----------------------------------------           |',
+  '  | Interactive terminal for OS scheduling simulation    |',
+  '  | Type "help" to see available commands                |',
+  '  +------------------------------------------------------+',
   ''
 ];
 

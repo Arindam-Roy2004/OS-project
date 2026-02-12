@@ -1,7 +1,5 @@
 /* ========================================
-   App.css — Authentic Terminal Design System
-   Inspired by real terminals & developer tools.
-   No AI gradients. No glassmorphism. Just raw.
+   App.css — Design System
    ======================================== */
 
 /* --- Reset & Base --- */
@@ -14,23 +12,22 @@
 }
 
 :root {
-  --green: #00ff41;
-  --green-dim: #00cc33;
-  --green-muted: #0a3d1a;
-  --amber: #ffb000;
-  --amber-dim: #cc8e00;
-  --red: #ff3333;
-  --cyan: #00e5ff;
-  --white: #d4d4d4;
-  --white-bright: #e8e8e8;
-  --gray: #6b6b6b;
-  --gray-dark: #3a3a3a;
+  --green: #4ade80;
+  --green-dim: #22c55e;
+  --green-muted: #14532d;
+  --amber: #fbbf24;
+  --amber-dim: #d97706;
+  --red: #f87171;
+  --cyan: #22d3ee;
+  --white: #e5e5e5;
+  --white-bright: #f5f5f5;
+  --gray: #737373;
+  --gray-dark: #404040;
   --bg: #0a0a0a;
   --bg-surface: #111111;
-  --bg-raised: #1a1a1a;
-  --border: #2a2a2a;
+  --bg-raised: #171717;
+  --border: #262626;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html {
@@ -40,13 +37,10 @@ html {
 body {
   font-family: var(--font-mono);
   background-color: var(--bg);
-  /* PatternCraft: subtle dot grid pattern */
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
   color: var(--white);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #root {
@@ -66,12 +60,13 @@ body {
 .app-header {
   border-bottom: 1px solid var(--border);
   background: var(--bg-surface);
+  flex-shrink: 0;
 }
 
 .header-content {
-  max-width: 1100px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,47 +75,45 @@ body {
 .header-left {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .logo-icon {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--green);
-  animation: none;
-  /* no spinning logos */
 }
 
 .logo-text {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--green);
   font-family: var(--font-mono);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 
 .header-subtitle {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--gray);
   font-family: var(--font-mono);
-  margin-left: 28px;
+  margin-left: 22px;
 }
 
 .github-link {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 5px;
+  padding: 4px 10px;
   border-radius: 4px;
   border: 1px solid var(--border);
   color: var(--gray);
   text-decoration: none;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   font-family: var(--font-mono);
   transition: color 0.15s, border-color 0.15s;
@@ -134,30 +127,34 @@ body {
 /* --- Main --- */
 .app-main {
   flex: 1;
-  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  max-width: 960px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 24px 48px;
+  padding: 16px 20px 32px;
 }
 
 /* --- Footer --- */
 .app-footer {
   border-top: 1px solid var(--border);
-  padding: 16px 24px;
+  padding: 10px 20px;
   text-align: center;
-  font-size: 11px;
-  color: var(--gray);
+  font-size: 10px;
+  color: var(--gray-dark);
   font-family: var(--font-mono);
+  flex-shrink: 0;
 }
 
 .app-footer strong {
-  color: var(--amber);
+  color: var(--gray);
+  font-weight: 500;
 }
 
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -171,7 +168,7 @@ body {
 
 /* --- Selection --- */
 ::selection {
-  background: rgba(0, 255, 65, 0.2);
+  background: rgba(74, 222, 128, 0.2);
   color: var(--green);
 }
 
@@ -179,7 +176,7 @@ body {
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     align-items: flex-start;
   }
 
@@ -188,6 +185,6 @@ body {
   }
 
   .app-main {
-    padding: 16px 12px 40px;
+    padding: 12px 10px 24px;
   }
 }

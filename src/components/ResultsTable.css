@@ -1,139 +1,94 @@
-/* ResultsTable.css — Clean, flat table styling */
+/* ResultsTable.css */
 
-.results-table-container {
-  background: #111;
-  border: 1px solid #2a2a2a;
-  border-radius: 6px;
+.results-container {
+  background: #111111;
+  border: 1px solid #262626;
+  border-radius: 8px;
   padding: 16px;
+  overflow-x: auto;
 }
 
-.results-title {
+.results-header {
   font-size: 13px;
   font-weight: 600;
-  color: #e5c07b;
-  margin-bottom: 12px;
+  color: #fbbf24;
+  margin-bottom: 14px;
   font-family: 'JetBrains Mono', monospace;
-}
-
-.table-scroll {
-  overflow-x: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .results-table {
   width: 100%;
   border-collapse: collapse;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .results-table th {
   text-align: left;
-  padding: 8px 12px;
-  color: #666;
-  font-size: 10px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #525252;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-weight: 600;
-  border-bottom: 1px solid #2a2a2a;
-  white-space: nowrap;
+  border-bottom: 1px solid #262626;
 }
 
 .results-table td {
-  padding: 8px 12px;
-  color: #aaa;
-  border-bottom: 1px solid #1e1e1e;
+  padding: 8px 10px;
+  color: #a3a3a3;
+  border-bottom: 1px solid #1a1a1a;
 }
 
-.results-table tbody tr:hover {
-  background: #1a1a1a;
-}
-
-.results-table tbody tr:last-child td {
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.pid-badge {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.averages-row td {
-  font-weight: 600;
-  color: #98c379;
+.results-table tr:last-child td {
   border-bottom: none;
 }
 
-/* Comparison table */
-.comparison-table .algo-name-cell {
-  white-space: nowrap;
+.results-table tr:hover td {
+  background: #171717;
 }
 
-.algo-badge {
+/* PID badge */
+.pid-badge {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 3px;
-  background: #1e1e1e;
-  color: #61afef;
-  font-weight: 600;
   font-size: 11px;
-  border: 1px solid #2a2a2a;
+  font-weight: 600;
+  min-width: 36px;
+  text-align: center;
 }
 
-.type-badge {
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 500;
-  border: 1px solid;
+/* Averages row */
+.results-table .avg-row td {
+  border-top: 1px solid #262626;
+  color: #4ade80;
+  font-weight: 600;
+  padding-top: 10px;
 }
 
-.type-badge.preemptive {
-  border-color: #3d3520;
-  color: #d19a66;
-}
-
-.type-badge.non-preemptive {
-  border-color: #1e3a1e;
-  color: #98c379;
-}
-
-.best-row {
-  background: #0d1a0d;
-}
-
-.best-value {
-  color: #98c379;
-  font-weight: 700;
-}
-
-.best-star {
-  color: #e5c07b;
-}
-
-/* Metric Cards */
-.metric-cards {
+/* Metric cards */
+.metrics-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 12px;
   margin-top: 14px;
 }
 
 .metric-card {
-  background: #0c0c0c;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
+  background: #0a0a0a;
+  border: 1px solid #262626;
+  border-radius: 6px;
   padding: 14px;
   text-align: center;
 }
 
 .metric-label {
   font-size: 10px;
-  font-weight: 600;
-  color: #555;
+  color: #525252;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
@@ -141,25 +96,51 @@
 }
 
 .metric-value {
-  font-size: 24px;
-  font-weight: 400;
-  color: #d4d4d4;
+  font-size: 22px;
+  font-weight: 600;
+  color: #e5e5e5;
   font-family: 'JetBrains Mono', monospace;
 }
 
-.metric-value.highlight {
-  color: #98c379;
-}
-
-.metric-desc {
-  font-size: 9px;
-  color: #444;
+.metric-subtitle {
+  font-size: 10px;
+  color: #404040;
   margin-top: 4px;
   font-family: 'JetBrains Mono', monospace;
 }
 
+/* Comparison table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.comparison-table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #525252;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #262626;
+  font-weight: 500;
+}
+
+.comparison-table td {
+  padding: 8px 10px;
+  color: #a3a3a3;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.comparison-table .best-value {
+  color: #4ade80;
+  font-weight: 600;
+}
+
 @media (max-width: 600px) {
-  .metric-cards {
+  .metrics-row {
     grid-template-columns: 1fr;
   }
 }
