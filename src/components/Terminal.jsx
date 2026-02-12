@@ -1,22 +1,32 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import figlet from 'figlet';
 import { runAlgorithm, getAlgorithmList, ALGORITHMS } from '../algorithms';
 import GanttChart from './GanttChart';
 import ResultsTable from './ResultsTable';
 import './Terminal.css';
 
-const WELCOME_BANNER = [
-  '',
-  '  +------------------------------------------------------+',
-  '  |    CPU Scheduling Algorithm Visualizer                |',
-  '  |    ----------------------------------------           |',
-  '  | Interactive terminal for OS scheduling simulation    |',
-  '  | Type "help" to see available commands                |',
-  '  +------------------------------------------------------+',
-  ''
+const FALLBACK_BANNER = [
+  { text: '', type: 'info' },
+  { text: '  CPU Scheduling Algorithm Visualizer', type: 'header' },
+  { text: '  Interactive terminal for OS scheduling simulation', type: 'dim' },
+  { text: '  Type "help" to see available commands', type: 'dim' },
+  { text: '', type: 'info' },
 ];
 
+function makeBanner(figletText) {
+  const artLines = figletText.split('\n').map(l => ({ text: '  ' + l, type: 'success' }));
+  return [
+    { text: '', type: 'info' },
+    ...artLines,
+    { text: '', type: 'info' },
+    { text: '  Interactive terminal for OS scheduling simulation', type: 'dim' },
+    { text: '  Type "help" to see available commands', type: 'dim' },
+    { text: '', type: 'info' },
+  ];
+}
+
 export default function Terminal() {
-  const [lines, setLines] = useState(WELCOME_BANNER.map(text => ({ text, type: 'info' })));
+  const [lines, setLines] = useState(FALLBACK_BANNER);
   const [input, setInput] = useState('');
   const [processes, setProcesses] = useState([]);
   const [history, setHistory] = useState([]);
