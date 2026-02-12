@@ -37,6 +37,17 @@ export default function Terminal() {
   const outputRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Generate figlet banner on mount
+  useEffect(() => {
+    import('figlet/importable-fonts/Small Slant').then(font => {
+      figlet.parseFont('Small Slant', font.default);
+      const art = figlet.textSync('CPU Sched', { font: 'Small Slant' });
+      setLines(makeBanner(art));
+    }).catch(() => {
+      // fallback already set
+    });
+  }, []);
+
   // Auto-scroll to bottom
   useEffect(() => {
     if (outputRef.current) {
