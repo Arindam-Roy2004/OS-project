@@ -1,0 +1,164 @@
+/* ResultsTable.css */
+
+.results-table-container {
+  background: #0d1117;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.results-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e6edf3;
+  margin-bottom: 16px;
+  font-family: 'Inter', sans-serif;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.results-table th {
+  text-align: left;
+  padding: 10px 14px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.results-table td {
+  padding: 10px 14px;
+  color: #c9d1d9;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.results-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.results-table tbody tr:last-child td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pid-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.averages-row td {
+  font-weight: 600;
+  color: #d2a8ff;
+  border-bottom: none;
+}
+
+/* Comparison table */
+.comparison-table .algo-name-cell {
+  white-space: nowrap;
+}
+
+.algo-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 5px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.type-badge.preemptive {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.type-badge.non-preemptive {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.best-row {
+  background: rgba(86, 211, 100, 0.05);
+}
+
+.best-value {
+  color: #56d364;
+  font-weight: 700;
+}
+
+.best-star {
+  color: #f59e0b;
+}
+
+/* Metric Cards */
+.metric-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 300;
+  color: #e6edf3;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.metric-value.highlight {
+  color: #56d364;
+}
+
+.metric-desc {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 6px;
+  font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 600px) {
+  .metric-cards {
+    grid-template-columns: 1fr;
+  }
+}
