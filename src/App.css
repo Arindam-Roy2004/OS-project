@@ -1,5 +1,7 @@
 /* ========================================
-   App.css — Global Design System
+   App.css — Authentic Terminal Design System
+   Inspired by real terminals & developer tools.
+   No AI gradients. No glassmorphism. Just raw.
    ======================================== */
 
 /* --- Reset & Base --- */
@@ -12,17 +14,23 @@
 }
 
 :root {
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --accent: #a855f7;
-  --bg-dark: #010409;
-  --bg-surface: #0d1117;
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: rgba(255, 255, 255, 0.35);
-  --border: rgba(255, 255, 255, 0.08);
+  --green: #00ff41;
+  --green-dim: #00cc33;
+  --green-muted: #0a3d1a;
+  --amber: #ffb000;
+  --amber-dim: #cc8e00;
+  --red: #ff3333;
+  --cyan: #00e5ff;
+  --white: #d4d4d4;
+  --white-bright: #e8e8e8;
+  --gray: #6b6b6b;
+  --gray-dark: #3a3a3a;
+  --bg: #0a0a0a;
+  --bg-surface: #111111;
+  --bg-raised: #1a1a1a;
+  --border: #2a2a2a;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 }
 
 html {
@@ -30,11 +38,14 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  background: var(--bg-dark);
-  color: var(--text-primary);
+  font-family: var(--font-mono);
+  background-color: var(--bg);
+  /* PatternCraft: subtle dot grid pattern */
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--white);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
@@ -54,17 +65,13 @@ body {
 /* --- Header --- */
 .app-header {
   border-bottom: 1px solid var(--border);
-  background: rgba(13, 17, 23, 0.8);
-  backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background: var(--bg-surface);
 }
 
 .header-content {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,93 +80,84 @@ body {
 .header-left {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .logo-icon {
-  font-size: 28px;
-  animation: logoSpin 4s linear infinite;
-  display: inline-block;
-}
-
-@keyframes logoSpin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  font-size: 20px;
+  color: var(--green);
+  animation: none;
+  /* no spinning logos */
 }
 
 .logo-text {
-  font-size: 22px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--green);
+  font-family: var(--font-mono);
   letter-spacing: -0.5px;
 }
 
 .header-subtitle {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-left: 38px;
+  font-size: 12px;
+  color: var(--gray);
+  font-family: var(--font-mono);
+  margin-left: 28px;
 }
 
 .github-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  color: var(--text-secondary);
+  color: var(--gray);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  font-family: var(--font-mono);
+  transition: color 0.15s, border-color 0.15s;
 }
 
 .github-link:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border-color: var(--gray);
 }
 
 /* --- Main --- */
 .app-main {
   flex: 1;
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 32px 24px 64px;
+  padding: 24px 24px 48px;
 }
 
 /* --- Footer --- */
 .app-footer {
   border-top: 1px solid var(--border);
-  padding: 20px 24px;
+  padding: 16px 24px;
   text-align: center;
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: var(--gray);
+  font-family: var(--font-mono);
 }
 
 .app-footer strong {
-  color: var(--text-secondary);
+  color: var(--amber);
 }
 
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -167,25 +165,21 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--gray-dark);
+  border-radius: 3px;
 }
 
 /* --- Selection --- */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
-  color: white;
+  background: rgba(0, 255, 65, 0.2);
+  color: var(--green);
 }
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     align-items: flex-start;
   }
 
@@ -194,6 +188,6 @@ body {
   }
 
   .app-main {
-    padding: 20px 16px 48px;
+    padding: 16px 12px 40px;
   }
 }
