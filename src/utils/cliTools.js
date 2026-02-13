@@ -209,8 +209,7 @@ export function cliTable(headers, rows, options = {}) {
 
 
 // ─────────────────────────────────────────────
-// 6. INQUIRER — Interactive CLI Prompts
-//    Generates prompt-style display text.
+// inquirer style prompts (not really used rn)
 // ─────────────────────────────────────────────
 export function inquirerList(question, choices, selectedIdx = null) {
   const result = [
