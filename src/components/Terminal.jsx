@@ -1012,7 +1012,7 @@ export default function Terminal() {
           {lines.map((line, i) => renderLine(line, i))}
         </div>
         <div className="terminal-input-line">
-          <span className="terminal-prompt">{aiMode ? 'ai>' : '$'}&nbsp;</span>
+          <span className="terminal-prompt" style={aiMode ? { color: '#81a2be' } : undefined}>{aiMode ? 'ai>' : '$'}&nbsp;</span>
           <input
             ref={inputRef}
             type="text"
