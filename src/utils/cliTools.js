@@ -1,17 +1,9 @@
-/**
- * cliTools.js — Browser-compatible wrappers for Node.js CLI libraries.
- *
- * Brings the visual feel of chalk, figlet, boxen, ora, gradient-string,
- * cli-table3, and inquirer into a DOM-based web terminal.
- *
- * These tools generate structured line objects { text, type, html? }
- * consumed by the Terminal React component.
- */
+// cliTools.js
+// bunch of terminal-looking stuff for the browser
+// tryna make it feel like a real CLI but its just react lol
 
 // ─────────────────────────────────────────────
-// 1. CHALK — Terminal Colors & Styling
-//    Maps semantic color names to CSS classes.
-//    Usage: chalk.green('text') → { text, type:'success' }
+// chalk - colors n stuff
 // ─────────────────────────────────────────────
 export const chalk = {
   green: (text) => ({ text, type: 'success' }),
@@ -38,9 +30,7 @@ export const chalk = {
 
 
 // ─────────────────────────────────────────────
-// 2. BOXEN — Beautiful CLI Boxes
-//    Wraps text in a Unicode box border.
-//    Supports: single, double, round, bold styles
+// boxen - those fancy boxes with borders
 // ─────────────────────────────────────────────
 const BOX_CHARS = {
   single: { tl: '┌', tr: '┐', bl: '└', br: '┘', h: '─', v: '│' },

@@ -1,11 +1,6 @@
-/**
- * theme.js — Centralized Theme Configuration
- * 
- * Uses @radix-ui/colors for professional color scales
- * and tinycolor2 for dynamic color manipulation.
- * 
- * Tomorrow Night Eighties inspired palette.
- */
+// theme.js
+// all the colors in one place so i dont go crazy
+// using tinycolor for some helper functions
 
 import tinycolor from 'tinycolor2';
 

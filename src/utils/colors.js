@@ -1,9 +1,6 @@
-/**
- * colors.js — Process Color Assignment
- * 
- * Tomorrow Night Eighties inspired palette for process visualization.
- * Warm, professional colors - no neon AI greens.
- */
+// colors.js
+// colors for the process bars in gantt chart
+// picked these manually cuz default ones looked ugly
 
 const PROCESS_COLORS = [
   { bg: '#81a2be', text: '#1d1f21', light: '#2d3640' },   // Slate Blue
