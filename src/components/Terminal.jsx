@@ -118,6 +118,7 @@ export default function Terminal() {
   const [comparisonResults, setComparisonResults] = useState(null);
   const [spinnerInterval, setSpinnerInterval] = useState(null);
   const [booting, setBooting] = useState(true);
+  const [bannerLines, setBannerLines] = useState(FALLBACK_BANNER);
 
   const outputRef = useRef(null);
   const inputRef = useRef(null);
@@ -203,14 +204,19 @@ export default function Terminal() {
         }
       );
 
-      setLines(prev => [
-        ...prev,
-        { text: '', type: 'info' },
-        gradient.mind('  >> SYSTEM READY <<'),
-        { text: '', type: 'info' },
-        ...infoBox,
-        { text: '', type: 'info' },
-      ]);
+      setLines(prev => {
+        const finalBanner = [
+          ...prev,
+          { text: '', type: 'info' },
+          gradient.mind('  >> SYSTEM READY <<'),
+          { text: '', type: 'info' },
+          ...infoBox,
+          { text: '', type: 'info' },
+        ];
+        // Store the banner for clear command
+        setBannerLines(finalBanner);
+        return finalBanner;
+      });
 
       setBooting(false);
     }
@@ -319,7 +325,7 @@ export default function Terminal() {
         handleList();
         break;
       case 'clear':
-        setLines([]);
+        setLines([...bannerLines]);
         setResults(null);
         setComparisonResults(null);
         break;
