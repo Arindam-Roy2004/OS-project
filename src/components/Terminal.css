@@ -8,8 +8,8 @@
 }
 
 .terminal-container {
-  background: #0c0c0c;
-  border: 1px solid #262626;
+  background: #1d1f21;
+  border: 1px solid #373b41;
   border-radius: 8px;
   overflow: hidden;
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
@@ -26,8 +26,8 @@
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  background: #141414;
-  border-bottom: 1px solid #262626;
+  background: #232527;
+  border-bottom: 1px solid #373b41;
   flex-shrink: 0;
 }
 
@@ -43,20 +43,20 @@
 }
 
 .dot.red {
-  background: #ff5f57;
+  background: #cc6666;
 }
 
 .dot.yellow {
-  background: #febc2e;
+  background: #f0c674;
 }
 
 .dot.green {
-  background: #28c840;
+  background: #b5bd68;
 }
 
 .terminal-title {
   font-size: 12px;
-  color: #525252;
+  color: #969896;
   flex: 1;
   text-align: center;
   font-family: inherit;
@@ -77,7 +77,7 @@
 }
 
 .terminal-output::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #4d4d4c;
   border-radius: 2px;
 }
 
@@ -94,8 +94,8 @@
 }
 
 .term-info {
-  color: #00afff;
-  /* ANSI Blue-ish */
+  color: #81a2be;
+  /* Muted Blue */
 }
 
 .term-header {
