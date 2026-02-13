@@ -542,10 +542,7 @@ export default function Terminal() {
     setComparisonResults(null);
   };
 
-  /**
-   * compare: Uses ora spinner, cli-table3 comparison table,
-   * and chalk for the "best" highlight.
-   */
+  // compares all algorithms side by side
   const handleCompare = async () => {
     if (processes.length === 0) {
       addLines([chalk.red('  ✖ No processes. Use "add" or "demo" first.')]);
@@ -614,9 +611,7 @@ export default function Terminal() {
     setResults(null);
   };
 
-  /**
-   * info: Uses boxen for algorithm details, chalk for pros/cons.
-   */
+  // shows details about a specific algo
   const handleInfo = (algoKey) => {
     if (!algoKey) {
       addLines([chalk.red('  ✖ Usage: info <algorithm>')]);
@@ -660,10 +655,7 @@ export default function Terminal() {
     ]);
   };
 
-  /**
-   * demo: Uses chalk for success, cli-table3 for process display,
-   * and boxen for the next-step hint.
-   */
+  // loads some sample processes for testing
   const handleDemo = () => {
     const demoProcesses = [
       { pid: 1, arrival: 0, burst: 5, priority: 3 },
@@ -727,10 +719,7 @@ export default function Terminal() {
     }
   };
 
-  /**
-   * Render a single terminal line.
-   * Supports gradient-string CSS classes for gradient text.
-   */
+  // renders one line of terminal output
   const renderLine = (line, i) => {
     if (line.isHtml && line.parts) {
       return (
