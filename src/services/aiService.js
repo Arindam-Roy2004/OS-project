@@ -10,7 +10,11 @@ const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 // Free models
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
-const OPENROUTER_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+const OPENROUTER_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
+
+// Debug: check if env vars loaded
+if (!GROQ_API_KEY) console.warn('[AI Service] VITE_GROQ_API_KEY not found in env');
+if (!OPENROUTER_API_KEY) console.warn('[AI Service] VITE_OPENROUTER_API_KEY not found in env');
 
 // System prompts for different AI tasks
 const SYSTEM_PROMPTS = {
@@ -53,7 +57,12 @@ Mention what the numbers mean, if the results are good/bad, and potential improv
 // ─────────────────────────────────────────────
 
 async function callGroq(messages, maxTokens = 200) {
+  if (!GROQ_API_KEY) {
+    console.warn('[AI] Groq: No API key');
+    return null;
+  }
   try {
+    console.log('[AI] Calling Groq...');
     const res = await fetch(GROQ_URL, {
       method: 'POST',
       headers: {
@@ -70,19 +79,26 @@ async function callGroq(messages, maxTokens = 200) {
 
     if (!res.ok) {
       const errText = await res.text();
+      console.error('[AI] Groq error:', res.status, errText);
       throw new Error(`Groq API error ${res.status}: ${errText}`);
     }
 
     const data = await res.json();
+    console.log('[AI] Groq success');
     return data.choices?.[0]?.message?.content?.trim() || 'No response from AI.';
   } catch (err) {
-    console.warn('Groq failed, falling back to OpenRouter:', err.message);
-    return null; // Signal to try fallback
+    console.warn('[AI] Groq failed, falling back to OpenRouter:', err.message);
+    return null;
   }
 }
 
 async function callOpenRouter(messages, maxTokens = 200) {
+  if (!OPENROUTER_API_KEY) {
+    console.warn('[AI] OpenRouter: No API key');
+    return null;
+  }
   try {
+    console.log('[AI] Calling OpenRouter...');
     const res = await fetch(OPENROUTER_URL, {
       method: 'POST',
       headers: {
@@ -101,13 +117,15 @@ async function callOpenRouter(messages, maxTokens = 200) {
 
     if (!res.ok) {
       const errText = await res.text();
+      console.error('[AI] OpenRouter error:', res.status, errText);
       throw new Error(`OpenRouter API error ${res.status}: ${errText}`);
     }
 
     const data = await res.json();
+    console.log('[AI] OpenRouter success');
     return data.choices?.[0]?.message?.content?.trim() || 'No response from AI.';
   } catch (err) {
-    console.error('OpenRouter also failed:', err.message);
+    console.error('[AI] OpenRouter also failed:', err.message);
     return null;
   }
 }
