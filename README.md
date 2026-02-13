@@ -1,16 +1,53 @@
-# React + Vite
+# cpu-scheduler
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+terminal-based cpu scheduling visualizer thing i made for my OS class
 
-Currently, two official plugins are available:
+## what is this
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+basically a web terminal where u can add processes and run different scheduling algorithms on them. shows gantt chart and all that good stuff
 
-## React Compiler
+## algorithms it has
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- FCFS (first come first serve)
+- SJF (shortest job first)
+- SRT (shortest remaining time)
+- Round Robin
+- Priority
+- HRRN (highest response ratio next)
+- MLFQ (multi level feedback queue)
+- Feedback
+- Aging
 
-## Expanding the ESLint configuration
+## how to run
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+```
+
+then open localhost:5173
+
+## usage
+
+type `help` in the terminal to see commands
+
+quick example:
+```
+add 1 0 5        # add process with pid=1, arrival=0, burst=5
+add 2 1 3
+add 3 2 4
+run fcfs         # run first come first serve
+compare          # compare all algorithms
+```
+
+## tech
+
+- react + vite
+- figlet for ascii art
+- some color libs for the terminal look
+
+## notes
+
+made this cuz the textbook examples were boring. wanted something interactive where i can actually see whats happening
+
+feel free to use for ur own OS assignments lol
