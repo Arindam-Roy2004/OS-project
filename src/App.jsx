@@ -1,6 +1,5 @@
 import React from 'react';
 import Terminal from './components/Terminal';
-import AIPanel from './components/AIPanel';
 import './App.css';
 
 export default function App() {
@@ -44,7 +43,6 @@ export default function App() {
         </p>
       </footer>
 
-      <AIPanel />
     </div>
   );
 }

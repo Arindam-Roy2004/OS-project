@@ -199,6 +199,11 @@
   caret-color: #e8985e;
 }
 
+/* AI mode prompt color */
+.terminal-input-line .terminal-prompt {
+  transition: color 0.2s;
+}
+
 /* ANSI Background Colors for Text Gantt Charts - Warm Professional Palette */
 .term-bg-red {
   background-color: #a54242;

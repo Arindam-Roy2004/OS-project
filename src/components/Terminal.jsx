@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import figlet from 'figlet';
 import { runAlgorithm, getAlgorithmList, ALGORITHMS } from '../algorithms';
 import { chalk, boxen, createSpinner, gradient, cliTable, inquirerList } from '../utils/cliTools';
-import { getCommandSuggestion, askSchedulingQuestion, getAlgorithmRecommendation, analyzeResults } from '../services/aiService';
+import { getCommandSuggestion, askSchedulingQuestion, getAlgorithmRecommendation, analyzeResults, chatWithAI } from '../services/aiService';
 import './Terminal.css';
 
 // Fallback banner before figlet loads
@@ -110,6 +110,8 @@ export default function Terminal() {
   const [spinnerInterval, setSpinnerInterval] = useState(null);
   const [booting, setBooting] = useState(true);
   const [bannerLines, setBannerLines] = useState(FALLBACK_BANNER);
+  const [aiMode, setAiMode] = useState(false);
+  const aiHistoryRef = useRef([]);
 
   const outputRef = useRef(null);
   const inputRef = useRef(null);
@@ -335,6 +337,9 @@ export default function Terminal() {
       case 'demo':
         handleDemo();
         break;
+      case 'ai-help':
+        handleAiHelp();
+        break;
       case 'ai':
         handleAI(parts.slice(1).join(' '));
         break;
@@ -382,7 +387,8 @@ export default function Terminal() {
       { text: '', type: 'output' },
       chalk.yellowBold('  AI COMMANDS'),
       chalk.dim('  ──────────────────────────────────────────'),
-      chalk.white('  ai <question>                             Ask AI about OS/scheduling'),
+      chalk.white('  ai-help                                   Start interactive AI chat'),
+      chalk.white('  ai <question>                             Quick AI question'),
       chalk.white('  suggest                                   AI recommends best algorithm'),
       chalk.white('  analyze                                   AI analyzes last run results'),
       { text: '', type: 'output' },
@@ -710,6 +716,94 @@ export default function Terminal() {
 
   // ─── AI COMMAND HANDLERS ────────────────────────
 
+  const handleAiHelp = () => {
+    setAiMode(true);
+    aiHistoryRef.current = [];
+
+    const welcomeBox = boxen(
+      'Interactive AI Chat — OS Scheduling Tutor\n\nAsk anything about scheduling algorithms, OS concepts,\nor how to use this simulator.\n\nType "exit" to leave AI mode.',
+      {
+        padding: 1,
+        borderStyle: 'round',
+        borderColor: 'info',
+        textColor: 'output',
+        title: '🤖 AI HELP',
+        titleColor: 'info',
+      }
+    );
+
+    addLines([
+      { text: '', type: 'output' },
+      ...welcomeBox,
+      { text: '', type: 'output' },
+      chalk.dim('  Entering AI mode... prompt changed to ai>'),
+      { text: '', type: 'output' },
+    ]);
+  };
+
+  const handleAiModeInput = async (text) => {
+    const trimmed = text.trim();
+
+    // Echo user input
+    addLines([chalk.cyan(`  ai> ${trimmed}`)]);
+
+    if (trimmed.toLowerCase() === 'exit' || trimmed.toLowerCase() === 'quit') {
+      setAiMode(false);
+      aiHistoryRef.current = [];
+      addLines([
+        { text: '', type: 'output' },
+        chalk.green('  ✔ Exited AI mode. Back to normal terminal.'),
+        chalk.dim('  Type "help" for commands.'),
+        { text: '', type: 'output' },
+      ]);
+      return;
+    }
+
+    if (!trimmed) return;
+
+    addLines([chalk.dim('  🤖 Thinking...')]);
+
+    try {
+      const reply = await chatWithAI(trimmed, aiHistoryRef.current);
+
+      // Store conversation context
+      aiHistoryRef.current.push({ role: 'user', content: trimmed });
+      aiHistoryRef.current.push({ role: 'assistant', content: reply });
+      // Keep last 8 messages for context
+      if (aiHistoryRef.current.length > 8) {
+        aiHistoryRef.current = aiHistoryRef.current.slice(-8);
+      }
+
+      const replyLines = reply.split('\n').filter(l => l.trim());
+
+      const aiBox = boxen(
+        replyLines.join('\n'),
+        {
+          padding: 0,
+          borderStyle: 'round',
+          borderColor: 'info',
+          textColor: 'output',
+          title: '🤖',
+          titleColor: 'info',
+        }
+      );
+
+      // Replace the "Thinking..." line with actual response
+      setLines(prev => {
+        const updated = [...prev];
+        // Remove last line (Thinking...)
+        updated.pop();
+        return [...updated, ...aiBox, { text: '', type: 'output' }];
+      });
+    } catch {
+      setLines(prev => {
+        const updated = [...prev];
+        updated.pop();
+        return [...updated, chalk.red('  ✖ AI request failed. Try again.'), { text: '', type: 'output' }];
+      });
+    }
+  };
+
   const handleUnknownCommand = async (command, fullInput) => {
     addLines([
       chalk.red(`  ✖ Unknown command: ${command}`),
@@ -852,7 +946,11 @@ export default function Terminal() {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleCommand(input);
+      if (aiMode) {
+        handleAiModeInput(input);
+      } else {
+        handleCommand(input);
+      }
       setInput('');
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -914,7 +1012,7 @@ export default function Terminal() {
           {lines.map((line, i) => renderLine(line, i))}
         </div>
         <div className="terminal-input-line">
-          <span className="terminal-prompt">$&nbsp;</span>
+          <span className="terminal-prompt">{aiMode ? 'ai>' : '$'}&nbsp;</span>
           <input
             ref={inputRef}
             type="text"
