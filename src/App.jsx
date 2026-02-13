@@ -1,5 +1,6 @@
 import React from 'react';
 import Terminal from './components/Terminal';
+import OpenAIIcon from './components/OpenAIIcon';
 import './App.css';
 
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
             </p>
           </div>
           <div className="header-right">
-            <span className="ai-badge">🤖 AI Powered</span>
+            <span className="ai-badge"><OpenAIIcon size={14} color="#81a2be" strokeWidth={2} /> AI Powered</span>
             <a
               href="https://github.com/Arindam-Roy2004/OS-project"
               target="_blank"
