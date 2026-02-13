@@ -21,7 +21,7 @@ export function sjf(processes) {
     }
 
     if (candidates.length === 0) {
-      // CPU idle — jump to next arrival
+      // nothing to run rn, skip ahead
       const nextArrival = Math.min(
         ...procs.filter((_, i) => !completed[i]).map(p => p.arrival)
       );
@@ -30,7 +30,7 @@ export function sjf(processes) {
       continue;
     }
 
-    // Pick the one with shortest burst (tie-break: earlier arrival, then lower PID)
+    // get shortest burst one
     candidates.sort((a, b) => {
       if (procs[a].burst !== procs[b].burst) return procs[a].burst - procs[b].burst;
       if (procs[a].arrival !== procs[b].arrival) return procs[a].arrival - procs[b].arrival;
