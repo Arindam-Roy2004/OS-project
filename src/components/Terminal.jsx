@@ -844,31 +844,54 @@ export default function Terminal() {
       return;
     }
 
-    addLines([chalk.dim('  🤖 Thinking...')]);
+    const spinner = createSpinner('Thinking...');
+    let spinnerIdx = -1;
+
+    setLines(prev => {
+      spinnerIdx = prev.length;
+      return [...prev, spinner.getFrame()];
+    });
+
+    const interval = setInterval(() => {
+      setLines(prev => {
+        if (spinnerIdx === -1) return prev;
+        const updated = [...prev];
+        // Ensure we are updating the correct line (the last one usually)
+        // Check if the lines array has changed size drastically (e.g. clear command)
+        if (updated.length <= spinnerIdx) return prev; 
+        updated[spinnerIdx] = spinner.getFrame();
+        return updated;
+      });
+    }, 80);
 
     try {
       const answer = await askSchedulingQuestion(question);
+      clearInterval(interval);
+      
       const answerLines = answer.split('\n').filter(l => l.trim());
-
-      const aiBox = boxen(
-        answerLines.join('\n'),
-        {
-          padding: 1,
-          borderStyle: 'round',
-          borderColor: 'info',
-          textColor: 'output',
-          title: '🤖 AI Knowledge',
-          titleColor: 'info',
+      
+      setLines(prev => {
+        const updated = [...prev];
+        // Replace spinner line with header or remove it
+        if (spinnerIdx !== -1 && updated.length > spinnerIdx) {
+            updated[spinnerIdx] = chalk.cyan('  🤖 AI Response:');
         }
-      );
+        return [
+            ...updated,
+            ...answerLines.map(l => ({ text: '  ' + l, type: 'output' })), // uniform simple text
+            { text: '', type: 'output' }
+        ];
+      });
 
-      addLines([
-        { text: '', type: 'output' },
-        ...aiBox,
-        { text: '', type: 'output' },
-      ]);
-    } catch {
-      addLines([chalk.red('  ✖ AI is currently unavailable. Try again later.')]);
+    } catch (err) {
+      clearInterval(interval);
+      setLines(prev => {
+        const updated = [...prev];
+         if (spinnerIdx !== -1 && updated.length > spinnerIdx) {
+            updated[spinnerIdx] = chalk.red('  ✖ AI request failed.');
+        }
+        return updated;
+      });
     }
   };
 
@@ -912,7 +935,7 @@ export default function Terminal() {
       return;
     }
 
-    addLines([chalk.dim('  🤖 Analyzing results...')]);
+    addLines([chalk.dim(' ֎ Analyzing results...')]);
 
     try {
       const analysis = await analyzeResults(

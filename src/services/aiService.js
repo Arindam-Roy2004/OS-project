@@ -156,7 +156,7 @@ When a user types a wrong command, suggest the correct one in 2 lines max.`,
 
   schedulingExpert: GUARDRAIL_PREFIX + `You are an OS CPU scheduling expert helping students.
 Simulator algorithms: FCFS, SJF, SRT, Round Robin, HRRN, Priority, Feedback, FBV, Aging, MLFQ.
-Answer concisely (4-6 lines max). Plain text only.`,
+Answer simply, systematically, and crisply. Use bullet points or short sentences. Keep it under 6 lines. Plain text only.`,
 
   algorithmAdvisor: GUARDRAIL_PREFIX + `You are a CPU scheduling algorithm advisor.
 Given processes (arrival, burst, priority), recommend the best algorithm in 3-4 lines.
