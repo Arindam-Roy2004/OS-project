@@ -1,24 +1,7 @@
-/**
- * MLFQ — Multi-Level Feedback Queue
- * 
- * HOW IT WORKS:
- * 3 priority levels, each with a different scheduling policy:
- *   Level 1 (Highest): Round Robin with quantum = 2
- *   Level 2 (Medium):  Round Robin with quantum = 4
- *   Level 3 (Lowest):  FCFS (runs to completion)
- * 
- * New processes enter Level 1. If a process doesn't finish within its
- * quantum, it's demoted to the next level. Higher-level queues always
- * have priority over lower ones.
- * 
- * TYPE: Preemptive (adaptive)
- * PROS: Best of both worlds — responsive for short/interactive processes,
- *       efficient for CPU-bound processes
- * CONS: Complex to implement; parameter tuning needed
- * 
- * This is the most sophisticated scheduling algorithm and is used in
- * many real operating systems (Linux CFS is inspired by similar ideas).
- */
+// mlfq.js - multi level feedback queue
+// 3 levels with different quantums
+// level 1: rr q=2, level 2: rr q=4, level 3: fcfs
+// this is what actual operating systems use (kinda)
 
 export function mlfq(processes) {
   const LEVELS = [

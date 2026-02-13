@@ -1,20 +1,6 @@
-/**
- * Aging — Priority Scheduling with Aging
- * 
- * HOW IT WORKS:
- * Based on the Xinu OS scheduling policy. Each process has an initial
- * priority. Every time the scheduler runs:
- *   1. The current process's priority resets to its initial value
- *   2. All waiting processes' priorities increase by 1
- *   3. The highest priority process is selected
- * 
- * This prevents starvation: even low-priority processes eventually
- * accumulate enough priority to run.
- * 
- * TYPE: Preemptive (re-evaluated each quantum)
- * PROS: Prevents starvation of low-priority processes
- * CONS: More complex; requires priority tracking per tick
- */
+// aging.js - priority with aging
+// waiting processes gain priority over time
+// prevents starvation, kinda like xinu os does it
 
 export function aging(processes) {
   const procs = processes.map(p => ({
