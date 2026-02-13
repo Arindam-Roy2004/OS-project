@@ -64,8 +64,8 @@
 
 /* Averages row */
 .results-table .avg-row td {
-  border-top: 1px solid #262626;
-  color: #4ade80;
+  border-top: 1px solid #373b41;
+  color: #e8985e;
   font-weight: 600;
   padding-top: 10px;
 }
@@ -79,8 +79,8 @@
 }
 
 .metric-card {
-  background: #0a0a0a;
-  border: 1px solid #262626;
+  background: #1d1f21;
+  border: 1px solid #373b41;
   border-radius: 6px;
   padding: 14px;
   text-align: center;
@@ -88,7 +88,7 @@
 
 .metric-label {
   font-size: 10px;
-  color: #525252;
+  color: #707880;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
@@ -98,13 +98,13 @@
 .metric-value {
   font-size: 22px;
   font-weight: 600;
-  color: #e5e5e5;
+  color: #c5c8c6;
   font-family: 'JetBrains Mono', monospace;
 }
 
 .metric-subtitle {
   font-size: 10px;
-  color: #404040;
+  color: #4d4d4c;
   margin-top: 4px;
   font-family: 'JetBrains Mono', monospace;
 }
@@ -121,21 +121,21 @@
   text-align: left;
   padding: 8px 10px;
   font-size: 11px;
-  color: #525252;
+  color: #707880;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid #262626;
+  border-bottom: 1px solid #373b41;
   font-weight: 500;
 }
 
 .comparison-table td {
   padding: 8px 10px;
-  color: #a3a3a3;
-  border-bottom: 1px solid #1a1a1a;
+  color: #969896;
+  border-bottom: 1px solid #2a2c2e;
 }
 
 .comparison-table .best-value {
-  color: #4ade80;
+  color: #e8985e;
   font-weight: 600;
 }
 
