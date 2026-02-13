@@ -112,9 +112,8 @@ export function boxen(text, options = {}) {
 
 
 // ─────────────────────────────────────────────
-// 3. ORA — Spinner Animations
-//    Returns spinner frames for the terminal.
-//    Use with setInterval to animate.
+// ─────────────────────────────────────────────
+// spinner - the loading dots thing
 // ─────────────────────────────────────────────
 const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
@@ -142,9 +141,7 @@ export function createSpinner(text) {
 
 
 // ─────────────────────────────────────────────
-// 4. GRADIENT-STRING — Gradient Text Effects
-//    Returns text with a gradient type marker
-//    for CSS rendering.
+// gradient - colorful text effects
 // ─────────────────────────────────────────────
 export const gradient = {
   pastel: (text) => ({ text, type: 'gradient-pastel', isGradient: true }),
@@ -155,8 +152,7 @@ export const gradient = {
 
 
 // ─────────────────────────────────────────────
-// 5. CLI-TABLE3 — Pretty Terminal Tables
-//    Generates formatted text table lines.
+// cliTable - makes those ascii tables
 // ─────────────────────────────────────────────
 export function cliTable(headers, rows, options = {}) {
   const {
