@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/colors": "^3.0.0",
     "boxen": "^8.0.1",
     "chalk": "^5.6.2",
     "cli-table3": "^0.6.5",
@@ -18,7 +19,8 @@
     "inquirer": "^13.2.2",
     "ora": "^9.3.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

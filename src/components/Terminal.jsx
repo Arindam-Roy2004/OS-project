@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import figlet from 'figlet';
 import { runAlgorithm, getAlgorithmList, ALGORITHMS } from '../algorithms';
 import { chalk, boxen, createSpinner, gradient, cliTable, inquirerList } from '../utils/cliTools';
-import GanttChart from './GanttChart';
-import ResultsTable from './ResultsTable';
 import './Terminal.css';
 
 // Fallback banner before figlet loads
@@ -35,6 +33,79 @@ const BOOT_STEPS = [
 
 function makeBannerArt(figletText) {
   return figletText.split('\n').map(l => ({ text: '  ' + l, type: 'success' }));
+}
+
+/**
+ * Text-based Gantt Chart generator
+ * Uses chalk.bg* colors to render a bar chart in the terminal.
+ */
+function renderTextGantt(timeline, processes) {
+  if (!timeline || timeline.length === 0) return [];
+
+  const maxTime = Math.max(...timeline.map(t => t.end));
+  const totalWidth = 60; // Characters width
+  const scale = totalWidth / maxTime;
+
+  // Colors cycle
+  const COLORS = ['bgRed', 'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan', 'bgWhite'];
+  const getPIDColor = (pid) => COLORS[(pid - 1) % COLORS.length];
+
+  let ganttRow = [];
+  let legend = [];
+  let timeAxis = [];
+
+  // 1. Build Gantt Bar
+  // Merge consecutive segments
+  const merged = [];
+  for (const seg of timeline) {
+    const last = merged[merged.length - 1];
+    if (last && last.pid === seg.pid && last.end === seg.start) {
+      last.end = seg.end;
+    } else {
+      merged.push({ ...seg });
+    }
+  }
+
+  let currentPos = 0;
+  merged.forEach(seg => {
+    const duration = seg.end - seg.start;
+    const width = Math.max(1, Math.round(duration * scale)); // At least 1 char
+
+    // Gap if idle
+    if (seg.start > currentPos) {
+      const gap = Math.round((seg.start - currentPos) * scale);
+      if (gap > 0) ganttRow.push({ text: ' '.repeat(gap), type: 'dim' });
+    }
+
+    if (seg.pid === 'idle') {
+      ganttRow.push({ text: '░'.repeat(width), type: 'dim' });
+    } else {
+      const colorFn = chalk[getPIDColor(seg.pid)] || chalk.bgWhite;
+      // Center PID in the block if distinct enough
+      const segText = width > 3 ? ` P${seg.pid}`.padEnd(width) : ' '.repeat(width);
+      ganttRow.push(colorFn(segText));
+    }
+    currentPos = seg.end;
+  });
+
+  // 2. Build Legend
+  const uniquePids = [...new Set(processes.map(p => p.pid))].sort((a, b) => a - b);
+  legend = uniquePids.map(pid => {
+    const colorFn = chalk[getPIDColor(pid)] || chalk.bgWhite;
+    return colorFn(` P${pid} `);
+  });
+
+  // Return line objects
+  return [
+    { text: '', type: 'output' },
+    chalk.white('  Timeline Visualization:'),
+    { text: '  ' + ganttRow.map(i => i.text).join(''), type: 'output', isHtml: true, parts: ganttRow },
+    // Hack: Terminal renders parts if available, or we just rely on renderLine logic if we flat it.
+    // Actually renderLine in Terminal.jsx expects a single `text` string or we need to update renderLine to support spans.
+    // simpler approach: one line is one color.
+    // Ah, renderLine does not support multi-color lines yet! 
+    // I need to update renderLine to support an array of spans.
+  ];
 }
 
 export default function Terminal() {
@@ -477,6 +548,9 @@ export default function Terminal() {
       // boxen: Summary
       ...summaryBox,
       { text: '', type: 'output' },
+      // Text Gantt Chart
+      ...renderTextGantt(result.timeline, processes),
+      { text: '', type: 'output' },
     ]);
 
     setResults({ ...result, algoKey, options });
@@ -673,6 +747,18 @@ export default function Terminal() {
    * Supports gradient-string CSS classes for gradient text.
    */
   const renderLine = (line, i) => {
+    if (line.isHtml && line.parts) {
+      return (
+        <div key={i} className="term-line">
+          {line.parts.map((part, j) => {
+            const classNames = [`term-${part.type}`];
+            if (part.bold) classNames.push('term-bold');
+            return <span key={j} className={classNames.join(' ')}>{part.text}</span>;
+          })}
+        </div>
+      );
+    }
+
     const classNames = [`term-line`, `term-${line.type}`];
     if (line.bold) classNames.push('term-bold');
     if (line.isGradient) classNames.push('term-gradient');
@@ -714,42 +800,6 @@ export default function Terminal() {
         </div>
       </div>
 
-      {/* Visualization area */}
-      {results && (
-        <div className="results-area">
-          <GanttChart
-            timeline={results.timeline}
-            processes={processes}
-            algorithmName={results.algorithmName}
-          />
-          <ResultsTable
-            results={results.results}
-            averages={results.averages}
-            algorithmName={results.algorithmName}
-            processes={processes}
-          />
-        </div>
-      )}
-
-      {comparisonResults && (
-        <div className="results-area comparison-area">
-          <h2 className="comparison-title">📊 Algorithm Comparison</h2>
-          {Object.entries(comparisonResults).map(([key, result]) => (
-            <div key={key} className="comparison-block">
-              <GanttChart
-                timeline={result.timeline}
-                processes={processes}
-                algorithmName={result.algorithmName}
-                compact
-              />
-            </div>
-          ))}
-          <ResultsTable
-            comparison={comparisonResults}
-            processes={processes}
-          />
-        </div>
-      )}
     </div>
   );
 }

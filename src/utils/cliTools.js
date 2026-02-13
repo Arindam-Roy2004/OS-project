@@ -21,6 +21,14 @@ export const chalk = {
   bold: (text) => ({ text, type: 'header' }),
   dim: (text) => ({ text, type: 'dim' }),
   white: (text) => ({ text, type: 'output' }),
+  // Background colors
+  bgRed: (text) => ({ text, type: 'bg-red' }),
+  bgGreen: (text) => ({ text, type: 'bg-green' }),
+  bgYellow: (text) => ({ text, type: 'bg-yellow' }),
+  bgBlue: (text) => ({ text, type: 'bg-blue' }),
+  bgMagenta: (text) => ({ text, type: 'bg-magenta' }),
+  bgCyan: (text) => ({ text, type: 'bg-cyan' }),
+  bgWhite: (text) => ({ text, type: 'bg-white' }),
   // Chained styles
   greenBold: (text) => ({ text, type: 'success', bold: true }),
   cyanBold: (text) => ({ text, type: 'info', bold: true }),

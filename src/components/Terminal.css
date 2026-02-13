@@ -86,39 +86,45 @@
 }
 
 .term-command {
-  color: #e5e5e5;
+  color: #eeeeee;
 }
 
 .term-output {
-  color: #a3a3a3;
+  color: #cccccc;
 }
 
 .term-info {
-  color: #60a5fa;
+  color: #00afff;
+  /* ANSI Blue-ish */
 }
 
 .term-header {
-  color: #fbbf24;
+  color: #ffff00;
+  /* ANSI Bright Yellow */
   font-weight: 600;
 }
 
 .term-success {
-  color: #4ade80;
+  color: #00ff00;
+  /* ANSI Bright Green */
 }
 
 .term-error {
-  color: #f87171;
+  color: #ff0000;
+  /* ANSI Bright Red */
 }
 
 .term-warning {
-  color: #fb923c;
+  color: #ffaa00;
+  /* ANSI Yellow/Orange */
 }
 
 .term-dim {
-  color: #525252;
+  color: #777777;
+  /* ANSI Dim Gray */
 }
 
-/* gradient-string effects */
+/* gradient-string effects (High saturation/contrast, no pastels) */
 .term-gradient {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -126,7 +132,8 @@
 }
 
 .term-gradient-pastel {
-  background-image: linear-gradient(90deg, #74b9ff, #a29bfe, #fd79a8, #fdcb6e);
+  /* Renaming this internally to 'rainbow' style since pastel is banned, but keeping class name for compatibility */
+  background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -134,7 +141,7 @@
 }
 
 .term-gradient-rainbow {
-  background-image: linear-gradient(90deg, #f87171, #fb923c, #fbbf24, #4ade80, #22d3ee, #818cf8);
+  background-image: linear-gradient(90deg, #ff0000, #ffaa00, #ffff00, #00ff00, #0000ff, #8b00ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -142,7 +149,8 @@
 }
 
 .term-gradient-vice {
-  background-image: linear-gradient(90deg, #5f27cd, #e056a0, #f78fb3);
+  background-image: linear-gradient(90deg, #8a2be2, #ff00ff);
+  /* BlueViolet to Magenta */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -150,7 +158,8 @@
 }
 
 .term-gradient-mind {
-  background-image: linear-gradient(90deg, #11998e, #38ef7d);
+  background-image: linear-gradient(90deg, #00aaaa, #00ff88);
+  /* Teal to Bright Green */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -189,33 +198,48 @@
   caret-color: #4ade80;
 }
 
-/* Results area below terminal */
+/* ANSI Background Colors for Text Gantt Charts */
+.term-bg-red {
+  background-color: #cc0000;
+  color: #ffffff;
+}
+
+.term-bg-green {
+  background-color: #00cc00;
+  color: #000000;
+}
+
+.term-bg-yellow {
+  background-color: #cccc00;
+  color: #000000;
+}
+
+.term-bg-blue {
+  background-color: #0000cc;
+  color: #ffffff;
+}
+
+.term-bg-magenta {
+  background-color: #cc00cc;
+  color: #ffffff;
+}
+
+.term-bg-cyan {
+  background-color: #00cccc;
+  color: #000000;
+}
+
+.term-bg-white {
+  background-color: #cccccc;
+  color: #000000;
+}
+
+.term-bg-black {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+/* Results area below terminal - REMOVED for pure CLI experience */
 .results-area {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.comparison-area .comparison-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #fbbf24;
-  margin-bottom: 10px;
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.comparison-block {
-  margin-bottom: 4px;
+  display: none;
 }
