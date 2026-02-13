@@ -46,6 +46,10 @@ compare          # compare all algorithms
 - figlet for ascii art
 - some color libs for the terminal look
 
+## acknowledgments
+
+algorithms code was inspired by/adapted from [CPU-Scheduling-Algorithms](https://github.com/yousefkotp/CPU-Scheduling-Algorithms) - thanks for the reference!
+
 ## notes
 
 made this cuz the textbook examples were boring. wanted something interactive where i can actually see whats happening
