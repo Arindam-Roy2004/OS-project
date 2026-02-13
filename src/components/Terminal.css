@@ -99,32 +99,32 @@
 }
 
 .term-header {
-  color: #ffff00;
-  /* ANSI Bright Yellow */
+  color: #f0c674;
+  /* Warm Amber */
   font-weight: 600;
 }
 
 .term-success {
-  color: #00ff00;
-  /* ANSI Bright Green */
+  color: #e8985e;
+  /* Copper/Orange - Primary */
 }
 
 .term-error {
-  color: #ff0000;
-  /* ANSI Bright Red */
+  color: #cc6666;
+  /* Muted Red */
 }
 
 .term-warning {
-  color: #ffaa00;
-  /* ANSI Yellow/Orange */
+  color: #de935f;
+  /* Warm Orange */
 }
 
 .term-dim {
-  color: #777777;
-  /* ANSI Dim Gray */
+  color: #707880;
+  /* Cool Gray */
 }
 
-/* gradient-string effects (High saturation/contrast, no pastels) */
+/* gradient-string effects - Warm Professional Gradients */
 .term-gradient {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -132,8 +132,8 @@
 }
 
 .term-gradient-pastel {
-  /* Renaming this internally to 'rainbow' style since pastel is banned, but keeping class name for compatibility */
-  background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+  /* Sunset gradient - warm and professional */
+  background-image: linear-gradient(90deg, #e8985e, #f0c674, #de935f, #d4a84a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -141,7 +141,8 @@
 }
 
 .term-gradient-rainbow {
-  background-image: linear-gradient(90deg, #ff0000, #ffaa00, #ffff00, #00ff00, #0000ff, #8b00ff);
+  /* Autumn gradient */
+  background-image: linear-gradient(90deg, #cc6666, #de935f, #f0c674, #b5bd68, #81a2be, #b294bb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -149,8 +150,8 @@
 }
 
 .term-gradient-vice {
-  background-image: linear-gradient(90deg, #8a2be2, #ff00ff);
-  /* BlueViolet to Magenta */
+  /* Dusk gradient - purple to pink */
+  background-image: linear-gradient(90deg, #b294bb, #a3685a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -158,8 +159,8 @@
 }
 
 .term-gradient-mind {
-  background-image: linear-gradient(90deg, #00aaaa, #00ff88);
-  /* Teal to Bright Green */
+  /* Ocean gradient - calm blues */
+  background-image: linear-gradient(90deg, #5f819d, #81a2be);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -175,13 +176,13 @@
   display: flex;
   align-items: center;
   padding: 10px 16px 12px;
-  border-top: 1px solid #1f1f1f;
-  background: #0a0a0a;
+  border-top: 1px solid #373b41;
+  background: #1d1f21;
   flex-shrink: 0;
 }
 
 .terminal-prompt {
-  color: #4ade80;
+  color: #e8985e;
   font-weight: 600;
   font-family: inherit;
   flex-shrink: 0;
@@ -192,10 +193,10 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #e5e5e5;
+  color: #c5c8c6;
   font-family: inherit;
   font-size: 14px;
-  caret-color: #4ade80;
+  caret-color: #e8985e;
 }
 
 /* ANSI Background Colors for Text Gantt Charts */
