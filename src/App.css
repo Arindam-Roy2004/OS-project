@@ -12,22 +12,32 @@
 }
 
 :root {
-  --green: #4ade80;
-  --green-dim: #22c55e;
-  --green-muted: #14532d;
-  --amber: #fbbf24;
-  --amber-dim: #d97706;
-  --red: #f87171;
-  --cyan: #22d3ee;
-  --white: #e5e5e5;
-  --white-bright: #f5f5f5;
-  --gray: #737373;
-  --gray-dark: #404040;
-  --bg: #0a0a0a;
-  --bg-surface: #111111;
-  --bg-raised: #171717;
-  --border: #262626;
+  /* Warm Copper/Amber Theme - No AI Greens */
+  --primary: #e8985e;
+  --primary-dim: #d97c3c;
+  --primary-muted: #5c3d25;
+  --accent: #f0c674;
+  --accent-dim: #d4a84a;
+  --danger: #cc6666;
+  --info: #81a2be;
+  --white: #c5c8c6;
+  --white-bright: #f0f0ec;
+  --gray: #969896;
+  --gray-dark: #4d4d4c;
+  --bg: #1d1f21;
+  --bg-surface: #232527;
+  --bg-raised: #2a2c2e;
+  --border: #373b41;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+  
+  /* Legacy aliases for compatibility */
+  --green: var(--primary);
+  --green-dim: var(--primary-dim);
+  --green-muted: var(--primary-muted);
+  --amber: var(--accent);
+  --amber-dim: var(--accent-dim);
+  --red: var(--danger);
+  --cyan: var(--info);
 }
 
 html {
@@ -168,8 +178,8 @@ body {
 
 /* --- Selection --- */
 ::selection {
-  background: rgba(74, 222, 128, 0.2);
-  color: var(--green);
+  background: rgba(232, 152, 94, 0.25);
+  color: var(--primary);
 }
 
 /* --- Responsive --- */
