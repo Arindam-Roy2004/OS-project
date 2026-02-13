@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import figlet from 'figlet';
 import { runAlgorithm, getAlgorithmList, ALGORITHMS } from '../algorithms';
 import { chalk, boxen, createSpinner, gradient, cliTable, inquirerList } from '../utils/cliTools';
+import { getCommandSuggestion, askSchedulingQuestion, getAlgorithmRecommendation, analyzeResults } from '../services/aiService';
 import './Terminal.css';
 
 // Fallback banner before figlet loads
@@ -334,11 +335,17 @@ export default function Terminal() {
       case 'demo':
         handleDemo();
         break;
+      case 'ai':
+        handleAI(parts.slice(1).join(' '));
+        break;
+      case 'suggest':
+        handleSuggest();
+        break;
+      case 'analyze':
+        handleAnalyze();
+        break;
       default:
-        addLines([
-          chalk.red(`  ✖ Unknown command: ${command}`),
-          chalk.dim('  Type "help" for available commands.')
-        ]);
+        handleUnknownCommand(command, trimmed);
     }
   }, [processes, bannerLines]);
 
@@ -372,6 +379,12 @@ export default function Terminal() {
       chalk.white('  reset                                     Clear all processes'),
       chalk.white('  clear                                     Clear terminal'),
       chalk.white('  help                                      Show this help'),
+      { text: '', type: 'output' },
+      chalk.yellowBold('  AI COMMANDS'),
+      chalk.dim('  ──────────────────────────────────────────'),
+      chalk.white('  ai <question>                             Ask AI about OS/scheduling'),
+      chalk.white('  suggest                                   AI recommends best algorithm'),
+      chalk.white('  analyze                                   AI analyzes last run results'),
       { text: '', type: 'output' },
       // chalk: styled header
       chalk.yellowBold('  ALGORITHMS'),
@@ -693,6 +706,148 @@ export default function Terminal() {
       { text: '', type: 'output' },
       ...hintBox,
     ]);
+  };
+
+  // ─── AI COMMAND HANDLERS ────────────────────────
+
+  const handleUnknownCommand = async (command, fullInput) => {
+    addLines([
+      chalk.red(`  ✖ Unknown command: ${command}`),
+      chalk.dim('  🤖 Asking AI for suggestions...'),
+    ]);
+
+    try {
+      const suggestion = await getCommandSuggestion(fullInput);
+      const suggestionLines = suggestion.split('\n').filter(l => l.trim());
+
+      const aiBox = boxen(
+        suggestionLines.join('\n'),
+        {
+          padding: 0,
+          borderStyle: 'round',
+          borderColor: 'info',
+          textColor: 'output',
+          title: '🤖 AI Suggestion',
+          titleColor: 'info',
+        }
+      );
+
+      addLines([
+        ...aiBox,
+        { text: '', type: 'output' },
+      ]);
+    } catch {
+      addLines([chalk.dim('  Type "help" for available commands.')]);
+    }
+  };
+
+  const handleAI = async (question) => {
+    if (!question.trim()) {
+      addLines([
+        chalk.red('  ✖ Usage: ai <question>'),
+        chalk.dim('  Example: ai what is the convoy effect in FCFS?'),
+      ]);
+      return;
+    }
+
+    addLines([chalk.dim('  🤖 Thinking...')]);
+
+    try {
+      const answer = await askSchedulingQuestion(question);
+      const answerLines = answer.split('\n').filter(l => l.trim());
+
+      const aiBox = boxen(
+        answerLines.join('\n'),
+        {
+          padding: 1,
+          borderStyle: 'round',
+          borderColor: 'info',
+          textColor: 'output',
+          title: '🤖 AI Knowledge',
+          titleColor: 'info',
+        }
+      );
+
+      addLines([
+        { text: '', type: 'output' },
+        ...aiBox,
+        { text: '', type: 'output' },
+      ]);
+    } catch {
+      addLines([chalk.red('  ✖ AI is currently unavailable. Try again later.')]);
+    }
+  };
+
+  const handleSuggest = async () => {
+    if (processes.length === 0) {
+      addLines([chalk.red('  ✖ No processes loaded. Use "add" or "demo" first.')]);
+      return;
+    }
+
+    addLines([chalk.dim('  🤖 Analyzing processes...')]);
+
+    try {
+      const recommendation = await getAlgorithmRecommendation(processes);
+      const recLines = recommendation.split('\n').filter(l => l.trim());
+
+      const aiBox = boxen(
+        recLines.join('\n'),
+        {
+          padding: 1,
+          borderStyle: 'round',
+          borderColor: 'success',
+          textColor: 'output',
+          title: '🤖 AI Recommendation',
+          titleColor: 'success',
+        }
+      );
+
+      addLines([
+        { text: '', type: 'output' },
+        ...aiBox,
+        { text: '', type: 'output' },
+      ]);
+    } catch {
+      addLines([chalk.red('  ✖ AI is currently unavailable. Try again later.')]);
+    }
+  };
+
+  const handleAnalyze = async () => {
+    if (!results) {
+      addLines([chalk.red('  ✖ No results to analyze. Run an algorithm first.')]);
+      return;
+    }
+
+    addLines([chalk.dim('  🤖 Analyzing results...')]);
+
+    try {
+      const analysis = await analyzeResults(
+        results.algorithmName,
+        results.results,
+        results.averages
+      );
+      const analysisLines = analysis.split('\n').filter(l => l.trim());
+
+      const aiBox = boxen(
+        analysisLines.join('\n'),
+        {
+          padding: 1,
+          borderStyle: 'round',
+          borderColor: 'header',
+          textColor: 'output',
+          title: '🤖 AI Analysis',
+          titleColor: 'header',
+        }
+      );
+
+      addLines([
+        { text: '', type: 'output' },
+        ...aiBox,
+        { text: '', type: 'output' },
+      ]);
+    } catch {
+      addLines([chalk.red('  ✖ AI is currently unavailable. Try again later.')]);
+    }
   };
 
   const handleKeyDown = (e) => {

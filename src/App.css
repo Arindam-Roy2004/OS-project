@@ -134,6 +134,22 @@ body {
   border-color: var(--gray);
 }
 
+/* AI Badge */
+.ai-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #81a2be44;
+  color: #81a2be;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  background: #81a2be0d;
+  letter-spacing: 0.3px;
+}
+
 /* --- Main --- */
 .app-main {
   flex: 1;

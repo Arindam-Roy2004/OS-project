@@ -1,0 +1,395 @@
+/* AIPanel.css — AI Knowledge Space Styles */
+
+/* ─── Toggle Button ─── */
+.ai-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: 1px solid #373b41;
+  border-radius: 50px;
+  background: #232527;
+  color: #81a2be;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.ai-toggle-btn:hover {
+  border-color: #81a2be;
+  background: #2a2c2e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(129, 162, 190, 0.15);
+}
+
+.ai-toggle-btn.active {
+  padding: 10px 14px;
+  border-color: #cc6666;
+  color: #cc6666;
+  border-radius: 50%;
+}
+
+.ai-toggle-btn.active:hover {
+  border-color: #cc6666;
+  background: #2a2020;
+}
+
+.ai-toggle-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.ai-toggle-label {
+  font-size: 12px;
+}
+
+/* ─── Panel ─── */
+.ai-panel {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  z-index: 999;
+  width: 400px;
+  max-height: 580px;
+  background: #1d1f21;
+  border: 1px solid #373b41;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-panel.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── Header ─── */
+.ai-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #232527;
+  border-bottom: 1px solid #373b41;
+  flex-shrink: 0;
+}
+
+.ai-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-panel-icon {
+  font-size: 22px;
+}
+
+.ai-panel-title h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #81a2be;
+  margin: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.ai-panel-subtitle {
+  font-size: 10px;
+  color: #707880;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.ai-panel-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8c9440;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.ai-status-text {
+  font-size: 10px;
+  color: #8c9440;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ─── Chat Area ─── */
+.ai-chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 250px;
+  max-height: 340px;
+}
+
+.ai-chat-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ai-chat-area::-webkit-scrollbar-thumb {
+  background: #4d4d4c;
+  border-radius: 2px;
+}
+
+/* ─── Messages ─── */
+.ai-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.ai-message.user {
+  justify-content: flex-end;
+}
+
+.ai-message-avatar {
+  font-size: 16px;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #2a2c2e;
+  border: 1px solid #373b41;
+}
+
+.ai-message-avatar.user-avatar {
+  background: #2a2528;
+  border-color: #e8985e33;
+}
+
+.ai-message-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  word-wrap: break-word;
+}
+
+.ai-message.assistant .ai-message-bubble {
+  background: #232527;
+  border: 1px solid #373b41;
+  color: #c5c8c6;
+  border-top-left-radius: 4px;
+}
+
+.ai-message.user .ai-message-bubble {
+  background: #2a2528;
+  border: 1px solid #e8985e33;
+  color: #e8985e;
+  border-top-right-radius: 4px;
+}
+
+.ai-message-bubble p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ─── Typing Indicator ─── */
+.ai-typing {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.ai-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #81a2be;
+  animation: typing-bounce 1.2s infinite;
+}
+
+.ai-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.ai-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+/* ─── Quick Prompts ─── */
+.ai-quick-prompts {
+  padding: 8px 14px;
+  border-top: 1px solid #373b4166;
+  flex-shrink: 0;
+}
+
+.ai-quick-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.ai-quick-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+
+.ai-quick-scroll::-webkit-scrollbar-thumb {
+  background: #4d4d4c;
+  border-radius: 2px;
+}
+
+.ai-quick-btn {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 1px solid #373b41;
+  border-radius: 20px;
+  background: transparent;
+  color: #707880;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.ai-quick-btn:hover:not(:disabled) {
+  border-color: #81a2be;
+  color: #81a2be;
+  background: #81a2be11;
+}
+
+.ai-quick-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Input Area ─── */
+.ai-input-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid #373b41;
+  background: #1d1f21;
+  flex-shrink: 0;
+}
+
+.ai-input {
+  flex: 1;
+  background: #232527;
+  border: 1px solid #373b41;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #c5c8c6;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ai-input:focus {
+  border-color: #81a2be;
+}
+
+.ai-input::placeholder {
+  color: #4d4d4c;
+}
+
+.ai-input:disabled {
+  opacity: 0.5;
+}
+
+.ai-send-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #373b41;
+  border-radius: 8px;
+  background: #232527;
+  color: #81a2be;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ai-send-btn:hover:not(:disabled) {
+  background: #81a2be;
+  color: #1d1f21;
+  border-color: #81a2be;
+}
+
+.ai-send-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ─── Footer ─── */
+.ai-panel-footer {
+  padding: 6px 14px;
+  text-align: center;
+  font-size: 9px;
+  color: #4d4d4c;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  border-top: 1px solid #373b4133;
+  flex-shrink: 0;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .ai-panel {
+    width: calc(100vw - 20px);
+    right: 10px;
+    bottom: 70px;
+    max-height: 70vh;
+  }
+
+  .ai-toggle-btn {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 14px;
+  }
+
+  .ai-toggle-label {
+    display: none;
+  }
+}
