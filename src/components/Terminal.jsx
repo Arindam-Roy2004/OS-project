@@ -353,7 +353,7 @@ export default function Terminal() {
           chalk.dim('  Type "help" for available commands.')
         ]);
     }
-  }, [processes]);
+  }, [processes, bannerLines]);
 
   /**
    * help: Uses boxen for section headers, chalk for coloring,
