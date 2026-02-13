@@ -165,7 +165,7 @@ export default function AIPanel() {
         </div>
 
         <div className="ai-panel-footer">
-          Powered by Groq + OpenRouter · Free AI Models
+          Powered by OpenAI GPT-4o-mini · Rate Limited · OS Topics Only
         </div>
       </div>
     </>
