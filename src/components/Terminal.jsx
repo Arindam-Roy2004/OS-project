@@ -13,14 +13,7 @@ const FALLBACK_BANNER = [
   { text: '', type: 'info' },
 ];
 
-/**
- * Build the welcome banner using:
- * - figlet for ASCII art
- * - gradient-string for colored title
- * - boxen for the info box
- * - chalk for styled text
- */
-// Spinner frames for boot animation (ora-style)
+// spinner stuff for boot animation
 const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
 // Boot sequence messages
@@ -35,10 +28,7 @@ function makeBannerArt(figletText) {
   return figletText.split('\n').map(l => ({ text: '  ' + l, type: 'success' }));
 }
 
-/**
- * Text-based Gantt Chart generator
- * Uses chalk.bg* colors to render a bar chart in the terminal.
- */
+// renders the timeline as colored blocks
 function renderTextGantt(timeline, processes) {
   if (!timeline || timeline.length === 0) return [];
 
@@ -248,10 +238,7 @@ export default function Terminal() {
     setLines(prev => [...prev, ...newLines]);
   }, []);
 
-  /**
-   * ora spinner: Animate a spinner, then resolve with success/fail.
-   * Used when "running" an algorithm to give a loading feel.
-   */
+  // shows spinner while running algo, looks cool
   const runWithSpinner = useCallback((text, task, duration = 600) => {
     return new Promise((resolve) => {
       const spinner = createSpinner(text);
@@ -355,10 +342,7 @@ export default function Terminal() {
     }
   }, [processes, bannerLines]);
 
-  /**
-   * help: Uses boxen for section headers, chalk for coloring,
-   * and cli-table3 style formatting for the algorithm list.
-   */
+  // help command
   const handleHelp = () => {
     const helpBox = boxen(
       'Type any command below to get started\nUse arrow keys ↑↓ for command history',
@@ -443,9 +427,7 @@ export default function Terminal() {
     ]);
   };
 
-  /**
-   * list: Uses cli-table3 for formatted process table display.
-   */
+  // shows all processes in a table
   const handleList = () => {
     if (processes.length === 0) {
       addLines([chalk.yellow('  ⚠ No processes added yet. Use "add" or "demo".')]);
@@ -467,10 +449,7 @@ export default function Terminal() {
     ]);
   };
 
-  /**
-   * run: Uses ora spinner while "processing", then displays results
-   * in a cli-table3 table with a boxen summary.
-   */
+  // runs the scheduling algo
   const handleRun = async (args) => {
     if (args.length === 0) {
       addLines([
