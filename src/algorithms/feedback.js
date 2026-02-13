@@ -1,28 +1,13 @@
-/**
- * Feedback (FB) — Multi-Level Feedback Queue with fixed quantum
- * 
- * HOW IT WORKS:
- * Uses multiple priority queues. New processes start at the highest queue.
- * Each queue uses RR with quantum=1. After using its quantum, a process
- * is demoted to the next lower queue. Lower queues only run when higher
- * queues are empty. The lowest queue also uses RR with quantum=1.
- * 
- * TYPE: Preemptive
- * PROS: Favors short/interactive processes; adapts to process behavior
- * CONS: Long processes may starve; complexity
- */
+// feedback.js - multi level feedback queue
+// new processes start at top queue
+// get demoted if they use their quantum
+// favors short/interactive stuff
 
 export function feedback(processes) {
   return feedbackGeneric(processes, false);
 }
 
-/**
- * Feedback Variable (FBV) — Feedback with varying time quantum
- * 
- * Same as Feedback but quantum DOUBLES at each level: 1, 2, 4, 8...
- * This gives longer processes bigger time slices at lower priorities,
- * reducing context switches for CPU-bound processes.
- */
+// same but quantum doubles at each level (1,2,4,8...)
 export function feedbackVariable(processes) {
   return feedbackGeneric(processes, true);
 }

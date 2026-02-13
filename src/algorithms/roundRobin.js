@@ -1,16 +1,6 @@
-/**
- * Round Robin (RR)
- * 
- * HOW IT WORKS:
- * Each process gets a fixed time slice (quantum). Processes are placed
- * in a circular queue. When a process's quantum expires, it goes to
- * the back of the queue. This ensures fair CPU distribution.
- * 
- * TYPE: Preemptive
- * PROS: Fair, prevents starvation, good for time-sharing systems
- * CONS: Performance depends on quantum size; too small = too many context switches;
- *       too large = degenerates to FCFS
- */
+// roundRobin.js - round robin scheduling
+// each process gets a time slice (quantum)
+// fair but quantum size matters a lot
 
 export function roundRobin(processes, options = {}) {
   const quantum = options.quantum || 2;
@@ -19,7 +9,7 @@ export function roundRobin(processes, options = {}) {
   }));
   const n = procs.length;
 
-  // Sort by arrival initially
+  // sort by arrival first
   const sorted = [...procs].sort((a, b) => a.arrival - b.arrival || a.pid - b.pid);
 
   const timeline = [];

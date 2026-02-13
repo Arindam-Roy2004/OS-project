@@ -1,14 +1,6 @@
-/**
- * Priority Scheduling (Non-Preemptive)
- * 
- * HOW IT WORKS:
- * Each process is assigned a priority number (lower number = higher priority).
- * When the CPU is free, the highest-priority arrived process runs to completion.
- * 
- * TYPE: Non-preemptive
- * PROS: Important processes get served first; used in real-time systems
- * CONS: Can cause starvation for low-priority processes
- */
+// priority.js - priority based scheduling
+// lower number = higher priority (like nice values)
+// can cause starvation for low priority processes
 
 export function priority(processes) {
   const procs = processes.map(p => ({ ...p }));

@@ -1,16 +1,6 @@
-/**
- * HRRN — Highest Response Ratio Next
- * 
- * HOW IT WORKS:
- * When the CPU becomes free, calculate the Response Ratio for each
- * waiting process:  RR = (WaitingTime + BurstTime) / BurstTime
- * Pick the process with the HIGHEST ratio. This balances short and
- * long processes — long-waiting processes eventually get a high ratio.
- * 
- * TYPE: Non-preemptive
- * PROS: Prevents starvation (aging is built in); good balance
- * CONS: Requires knowing burst times; overhead of ratio calculation
- */
+// hrrn.js - highest response ratio next
+// calculates ratio = (waiting + burst) / burst
+// picks highest ratio, prevents starvation naturally
 
 export function hrrn(processes) {
   const procs = processes.map(p => ({ ...p }));
