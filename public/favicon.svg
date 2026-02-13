@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="cpuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- CPU Body -->
+  <rect x="20" y="20" width="60" height="60" rx="8" fill="url(#cpuGrad)" />
+  
+  <!-- CPU Core -->
+  <rect x="32" y="32" width="36" height="36" rx="4" fill="#1e1b4b" />
+  <rect x="38" y="38" width="24" height="24" rx="2" fill="#4f46e5" />
+  
+  <!-- Pins - Top -->
+  <rect x="30" y="10" width="6" height="12" rx="1" fill="#a5b4fc" />
+  <rect x="42" y="10" width="6" height="12" rx="1" fill="#a5b4fc" />
+  <rect x="54" y="10" width="6" height="12" rx="1" fill="#a5b4fc" />
+  <rect x="66" y="10" width="6" height="12" rx="1" fill="#a5b4fc" />
+  
+  <!-- Pins - Bottom -->
+  <rect x="30" y="78" width="6" height="12" rx="1" fill="#a5b4fc" />
+  <rect x="42" y="78" width="6" height="12" rx="1" fill="#a5b4fc" />
+  <rect x="54" y="78" width="6" height="12" rx="1" fill="#a5b4fc" />
+  <rect x="66" y="78" width="6" height="12" rx="1" fill="#a5b4fc" />
+  
+  <!-- Pins - Left -->
+  <rect x="10" y="30" width="12" height="6" rx="1" fill="#a5b4fc" />
+  <rect x="10" y="42" width="12" height="6" rx="1" fill="#a5b4fc" />
+  <rect x="10" y="54" width="12" height="6" rx="1" fill="#a5b4fc" />
+  <rect x="10" y="66" width="12" height="6" rx="1" fill="#a5b4fc" />
+  
+  <!-- Pins - Right -->
+  <rect x="78" y="30" width="12" height="6" rx="1" fill="#a5b4fc" />
+  <rect x="78" y="42" width="12" height="6" rx="1" fill="#a5b4fc" />
+  <rect x="78" y="54" width="12" height="6" rx="1" fill="#a5b4fc" />
+  <rect x="78" y="66" width="12" height="6" rx="1" fill="#a5b4fc" />
+</svg>
