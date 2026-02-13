@@ -1,9 +1,6 @@
-/**
- * Algorithm Registry & Runner
- * 
- * Central hub that maps algorithm names to their implementations.
- * The Terminal component uses this to dispatch `run <algo>` commands.
- */
+// index.js
+// all the scheduling algorithms in one place
+// add new ones here if u want
 
 import { fcfs } from './fcfs';
 import { sjf } from './sjf';

@@ -1,18 +1,9 @@
-/**
- * FCFS — First Come First Serve
- * 
- * HOW IT WORKS:
- * The simplest scheduling algorithm. Processes are executed in the
- * exact order they arrive. Like a queue at a ticket counter — whoever
- * comes first gets served first, regardless of how long they take.
- * 
- * TYPE: Non-preemptive (once a process starts, it runs to completion)
- * PROS: Simple, fair (no starvation)
- * CONS: Convoy effect — a long process can block many short ones
- */
+// fcfs.js - first come first serve
+// simplest one, just runs processes in order they arrive
+// not efficient but easy to understand
 
 export function fcfs(processes) {
-  // Sort by arrival time, then by PID for tie-breaking
+  // sort by arrival, use pid as tiebreaker
   const sorted = [...processes]
     .sort((a, b) => a.arrival - b.arrival || a.pid - b.pid);
 

@@ -1,14 +1,6 @@
-/**
- * SJF — Shortest Job First (also called SPN: Shortest Process Next)
- * 
- * HOW IT WORKS:
- * At each moment when the CPU becomes free, look at all processes
- * that have arrived so far and pick the one with the SHORTEST burst time.
- * 
- * TYPE: Non-preemptive
- * PROS: Minimizes average waiting time (optimal for non-preemptive)
- * CONS: Can cause starvation for long processes; requires knowing burst times in advance
- */
+// sjf.js - shortest job first
+// picks the process with smallest burst time
+// good for avg waiting time but long processes might wait forever
 
 export function sjf(processes) {
   const procs = processes.map(p => ({ ...p }));
@@ -20,7 +12,7 @@ export function sjf(processes) {
   let done = 0;
 
   while (done < n) {
-    // Find all arrived, not-completed processes
+    // find processes that have arrived
     let candidates = [];
     for (let i = 0; i < n; i++) {
       if (!completed[i] && procs[i].arrival <= currentTime) {

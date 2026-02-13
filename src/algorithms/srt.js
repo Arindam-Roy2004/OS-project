@@ -1,15 +1,6 @@
-/**
- * SRT — Shortest Remaining Time (Preemptive SJF / SRTF)
- * 
- * HOW IT WORKS:
- * At every time unit, check if a newly arrived process has a shorter
- * remaining burst than the currently running one. If yes, preempt
- * (pause) the current process and switch to the shorter one.
- * 
- * TYPE: Preemptive
- * PROS: Optimal average waiting time among all algorithms
- * CONS: High context-switching overhead; starvation possible for long processes
- */
+// srt.js - shortest remaining time
+// preemptive version of sjf
+// can interrupt running process if shorter one arrives
 
 export function srt(processes) {
   const procs = processes.map(p => ({ ...p, remaining: p.burst, started: false, firstStart: -1 }));
@@ -24,11 +15,11 @@ export function srt(processes) {
   const maxTime = Math.max(...procs.map(p => p.arrival)) + procs.reduce((s, p) => s + p.burst, 0) + 1;
 
   while (done < n && currentTime < maxTime) {
-    // Find arrived processes with remaining > 0
+    // get arrived processes with time left
     let candidates = procs.filter(p => p.arrival <= currentTime && p.remaining > 0);
 
     if (candidates.length === 0) {
-      // Idle
+      // nothing to run, skip ahead
       const nextArrival = Math.min(
         ...procs.filter(p => p.remaining > 0).map(p => p.arrival)
       );
