@@ -199,45 +199,45 @@
   caret-color: #e8985e;
 }
 
-/* ANSI Background Colors for Text Gantt Charts */
+/* ANSI Background Colors for Text Gantt Charts - Warm Professional Palette */
 .term-bg-red {
-  background-color: #cc0000;
+  background-color: #a54242;
   color: #ffffff;
 }
 
 .term-bg-green {
-  background-color: #00cc00;
-  color: #000000;
+  background-color: #8c9440;
+  color: #ffffff;
 }
 
 .term-bg-yellow {
-  background-color: #cccc00;
-  color: #000000;
+  background-color: #de935f;
+  color: #1d1f21;
 }
 
 .term-bg-blue {
-  background-color: #0000cc;
+  background-color: #5f819d;
   color: #ffffff;
 }
 
 .term-bg-magenta {
-  background-color: #cc00cc;
+  background-color: #85678f;
   color: #ffffff;
 }
 
 .term-bg-cyan {
-  background-color: #00cccc;
-  color: #000000;
+  background-color: #5e8d87;
+  color: #ffffff;
 }
 
 .term-bg-white {
-  background-color: #cccccc;
-  color: #000000;
+  background-color: #969896;
+  color: #1d1f21;
 }
 
 .term-bg-black {
-  background-color: #333333;
-  color: #ffffff;
+  background-color: #373b41;
+  color: #c5c8c6;
 }
 
 /* Results area below terminal - REMOVED for pure CLI experience */
