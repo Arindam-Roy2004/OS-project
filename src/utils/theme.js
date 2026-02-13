@@ -45,62 +45,46 @@ export const THEME = {
   },
 };
 
-/**
- * Generate a readable text color for any background
- */
+// picks black or white text depending on bg color
 export function getReadableText(bgColor) {
   const color = tinycolor(bgColor);
   return color.isLight() ? '#1d1f21' : '#c5c8c6';
 }
 
-/**
- * Darken a color by percentage
- */
+// make color darker
 export function darken(color, amount = 10) {
   return tinycolor(color).darken(amount).toHexString();
 }
 
-/**
- * Lighten a color by percentage
- */
+// make color lighter
 export function lighten(color, amount = 10) {
   return tinycolor(color).lighten(amount).toHexString();
 }
 
-/**
- * Create a transparent version of a color
- */
+// add transparency
 export function alpha(color, amount = 0.5) {
   return tinycolor(color).setAlpha(amount).toRgbString();
 }
 
-/**
- * Generate hover state color
- */
+// for hover effects
 export function getHoverColor(color) {
   const tc = tinycolor(color);
   return tc.isLight() ? tc.darken(8).toHexString() : tc.lighten(8).toHexString();
 }
 
-/**
- * Generate a complementary color for accents
- */
+// opposite color
 export function getComplementary(color) {
   return tinycolor(color).complement().toHexString();
 }
 
-/**
- * Get analogous colors for gradients
- */
+// similar colors for gradients
 export function getAnalogous(color, count = 3) {
   return tinycolor(color)
     .analogous(count)
     .map(c => c.toHexString());
 }
 
-/**
- * CSS custom properties object for injection
- */
+// css vars if we need em
 export function getThemeCSSVariables() {
   return {
     '--theme-bg-base': THEME.bg.base,
