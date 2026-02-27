@@ -249,3 +249,14 @@
 .results-area {
   display: none;
 }
+.terminal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  background: #232527;
+  border-top: 1px solid #373b41;
+  color: #969896;
+  font-size: 12px;
+  flex-shrink: 0;
+}

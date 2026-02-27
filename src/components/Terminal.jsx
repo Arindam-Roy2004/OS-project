@@ -1048,8 +1048,10 @@ export default function Terminal() {
             autoFocus
           />
         </div>
+        <div className="terminal-footer">
+          made by arindam
+        </div>
       </div>
-
     </div>
   );
 }
