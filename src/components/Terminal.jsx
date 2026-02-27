@@ -1049,7 +1049,7 @@ export default function Terminal() {
           />
         </div>
         <div className="terminal-footer">
-          made by <a href="https://royarindam.page" target="_blank" rel="noopener noreferrer" className="terminal-footer-link">arindam roy</a>
+          made by <a href="https://royarindam.page" target="_blank" rel="noopener noreferrer" className="terminal-footer-link">arindam</a>
         </div>
       </div>
     </div>
