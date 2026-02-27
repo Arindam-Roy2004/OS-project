@@ -38,12 +38,6 @@ export default function App() {
         <Terminal />
       </main>
 
-      <footer className="app-footer">
-        <p>
-          built by <strong>arindam roy</strong> · os scheduling visualizer · ai powered
-        </p>
-      </footer>
-
     </div>
   );
 }

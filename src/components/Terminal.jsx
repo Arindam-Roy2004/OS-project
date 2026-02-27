@@ -1048,10 +1048,8 @@ export default function Terminal() {
             autoFocus
           />
         </div>
-        <div className="terminal-footer">
-          made by <a href="https://royarindam.page" target="_blank" rel="noopener noreferrer" className="terminal-footer-link">arindam</a>
-        </div>
       </div>
+
     </div>
   );
 }
