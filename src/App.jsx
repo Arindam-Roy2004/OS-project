@@ -38,6 +38,12 @@ export default function App() {
         <Terminal />
       </main>
 
+      <footer className="app-footer">
+        <p>
+          made by <a href="https://royarindam.page" target="_blank" rel="noopener noreferrer"><strong>arindam</strong></a> · os scheduling visualizer · ai powered
+        </p>
+      </footer>
+
     </div>
   );
 }
