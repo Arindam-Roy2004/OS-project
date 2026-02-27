@@ -40,7 +40,7 @@ export default function App() {
 
       <footer className="app-footer">
         <p>
-          made by <a href="https://royarindam.page" target="_blank" rel="noopener noreferrer"><strong>arindam</strong></a> · os scheduling visualizer · ai powered
+          made by <a href="https://royarindam.page" target="_blank" rel="noopener noreferrer" className="footer-name-link">arindam</a> · os scheduling visualizer · ai powered
         </p>
       </footer>
 

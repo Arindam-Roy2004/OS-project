@@ -177,6 +177,17 @@ body {
   font-weight: 500;
 }
 
+.footer-name-link {
+  color: #c5c8c6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-name-link:hover {
+  color: #c5c8c6;
+  text-decoration: none;
+}
+
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
   width: 5px;
