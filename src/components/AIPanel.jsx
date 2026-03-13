@@ -165,7 +165,7 @@ export default function AIPanel() {
         </div>
 
         <div className="ai-panel-footer">
-          Powered by OpenAI GPT-4o-mini · Rate Limited · OS Topics Only
+          Powered by Gemini 2.5 Flash · Rate Limited · OS Topics Only
         </div>
       </div>
     </>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import figlet from 'figlet';
 import { runAlgorithm, getAlgorithmList, ALGORITHMS } from '../algorithms';
 import { chalk, boxen, createSpinner, gradient, cliTable, inquirerList } from '../utils/cliTools';
-import { getCommandSuggestion, askSchedulingQuestion, getAlgorithmRecommendation, analyzeResults, chatWithAI } from '../services/aiService';
+import { getCommandSuggestion, askSchedulingQuestion, parseUserIntent, getAlgorithmRecommendation, analyzeResults, chatWithAI } from '../services/aiService';
 import './Terminal.css';
 
 // Fallback banner before figlet loads
@@ -856,8 +856,6 @@ export default function Terminal() {
       setLines(prev => {
         if (spinnerIdx === -1) return prev;
         const updated = [...prev];
-        // Ensure we are updating the correct line (the last one usually)
-        // Check if the lines array has changed size drastically (e.g. clear command)
         if (updated.length <= spinnerIdx) return prev; 
         updated[spinnerIdx] = spinner.getFrame();
         return updated;
@@ -865,20 +863,64 @@ export default function Terminal() {
     }, 80);
 
     try {
-      const answer = await askSchedulingQuestion(question);
+      // First try to parse the intent
+      const intentObj = await parseUserIntent(question);
+      
       clearInterval(interval);
+      setLines(prev => {
+        const updated = [...prev];
+        if (spinnerIdx !== -1 && updated.length > spinnerIdx) {
+            updated[spinnerIdx] = chalk.cyan('  🤖 AI Intent Recognized...');
+        }
+        // Remove 'AI Intent Recognized...' if it's an action, we inject command silently
+        if (intentObj.intent !== 'chat') {
+           updated.pop();
+        }
+        return updated;
+      });
+
+      if (intentObj.intent && intentObj.intent !== 'chat') {
+        // Execute the interpreted command
+        switch(intentObj.intent) {
+          case 'run':
+            const q = intentObj.quantum ? String(intentObj.quantum) : '';
+            handleRun([String(intentObj.algo), q].filter(Boolean));
+            break;
+          case 'add':
+            handleAdd((intentObj.args || []).map(String));
+            break;
+          case 'demo':
+            handleDemo();
+            break;
+          case 'reset':
+            setProcesses([]);
+            setResults(null);
+            setComparisonResults(null);
+            addLines([chalk.green('✔ All processes cleared by AI.')]);
+            break;
+          case 'compare':
+            handleCompare();
+            break;
+          default:
+            addLines([chalk.red(`  ✖ Unrecognized intent: ${intentObj.intent}`)]);
+        }
+        return;
+      }
+
+      // If just a regular question, we ask AI to answer it
+      const answer = await askSchedulingQuestion(question);
       
       const answerLines = answer.split('\n').filter(l => l.trim());
       
       setLines(prev => {
         const updated = [...prev];
-        // Replace spinner line with header or remove it
+        // Replace intent line with header
         if (spinnerIdx !== -1 && updated.length > spinnerIdx) {
             updated[spinnerIdx] = chalk.cyan('  🤖 AI Response:');
         }
         return [
             ...updated,
-            ...answerLines.map(l => ({ text: '  ' + l, type: 'output' })), // uniform simple text
+            ...answerLines.map(l => ({ text: '  ' + l, type: 'output' })), 
             { text: '', type: 'output' }
         ];
       });
